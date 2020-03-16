@@ -14,7 +14,6 @@
 %token	CASE DEFAULT IF ELSE SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
 
 %token	ALIGNAS ALIGNOF ATOMIC GENERIC NORETURN STATIC_ASSERT THREAD_LOCAL
-
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
 %union {
@@ -53,6 +52,7 @@ struct list{
 
 typedef struct list list1;
 struct list* list2 = NULL;
+void message(int);
 int exists(list1* root, char name[100], int value){
 	if(root == NULL || root->head == NULL){
 		return 0;
@@ -117,6 +117,39 @@ void print(node *head){
 		temp=temp->next;
 	}
 }
+ typedef struct tnode
+ {
+ struct tnode *left;
+ struct tnode *right;
+ char *token;
+ } tnode; 
+
+tnode *mknode(tnode *left, tnode *right, char *token)
+{ /* malloc the node */
+ tnode *newnode = (tnode *)malloc(sizeof(tnode));
+ char *newstr = (char *)malloc(strlen(token)+1);
+ strcpy(newstr, token);
+ newnode->left = left;
+ newnode->right = right;
+ newnode->token = newstr;
+ return(newnode);
+}
+
+void printtree(tnode *tree)
+{
+ int i;
+ if (tree->left || tree->right)
+ printf("(");
+ printf(" %s ", tree->token);
+ if (tree->left)
+ printtree(tree->left);
+ if (tree->right)
+ printtree(tree->right);
+ if (tree->left || tree->right)
+ printf(")");
+} 
+
+
 %}
 
 %%
@@ -127,6 +160,7 @@ primary_expression
 	| string { printf("string: %s\n", yylval.a); yylval.a = ""; }
 	| '(' expression ')'
 	| generic_selection
+	| error ";" {yyerrok; yyerror("Primary Expression Not defined correctly"); message(nl);}
 	;
 
 constant
@@ -209,7 +243,7 @@ multiplicative_expression
 
 additive_expression
 	: multiplicative_expression
-	| additive_expression '+' multiplicative_expression
+	| additive_expression '+' multiplicative_expression 
 	| additive_expression '-' multiplicative_expression
 	;
 
@@ -265,7 +299,7 @@ conditional_expression
 
 assignment_expression
 	: conditional_expression
-	| unary_expression assignment_operator assignment_expression
+	| unary_expression assignment_operator assignment_expression 
 	;
 
 assignment_operator
@@ -283,8 +317,9 @@ assignment_operator
 	;
 
 expression
-	: assignment_expression
+	: assignment_expression 
 	| expression ',' assignment_expression
+	| error ';' {yyerrok; message(nl);}
 	;
 
 constant_expression
@@ -628,10 +663,12 @@ declaration_list
 
 void yyerror(const char *s)
 {
-	fflush(stdout);
-	fprintf(stderr, "*** %s\n", s);
+	//fflush(stdout);
+	fprintf(stderr, " Syntax Error: %s\n", s);
 }
-
+void message(int nl){
+	fprintf(stderr, "At Line Number %d\n", nl);
+}
 int main(){
 	list2 = (struct list*)malloc(sizeof(struct list));
 	list2->head = NULL;
