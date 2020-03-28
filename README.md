@@ -1,7 +1,7 @@
 # compiler-design-2020
 A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES University.
 # Deliverables
-  1. Phase 1 Lex Analysis<br>
+#  1. Phase 1 Lex Analysis<br>
     - Token Generation (Done) <br>
     - Convert input stream to valid datatypes (Done)<br>
     - Remove Comments (Done)<br>
