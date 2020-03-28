@@ -39,7 +39,8 @@ static void comment(void);
 "float"					{printToken("FLOAT");yylval.str = strdup(yytext); 
                         return(FLOAT);}
 "char"                  {printToken("CHAR"); yylval.str=strdup(yytext); return(CHAR);}
-
+"for"                   {printToken("FOR"); return FOR;}
+"class"                 {printToken("CLASS"); return CLASS;}
 "++"				{printToken("INC_OP");return INC_OP;} 
 "--"				{printToken("DEC_OP");return DEC_OP;} 
 "+"				{printToken("PLUS");return PLUS;}     
@@ -72,7 +73,7 @@ static void comment(void);
 {D}*"."{D}+     {printToken("FLOATINGPOINT");yylval.str = strdup(yytext); return FLT;}
 \"{TE}*{WS}*\"       {printToken("String"); yylval.str = strdup(yytext); return STR;}
 {WS}+					{}
-.					{}
+.					{printToken("UNKNOWN LEXEME");printToken(yytext);}
 
 
 %%

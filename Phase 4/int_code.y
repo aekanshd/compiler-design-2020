@@ -1,5 +1,5 @@
 %{
-
+// TBD DIFFERENT ENTRIES FOR LOCAL AND GLOBAL VARIABLES
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,13 +52,13 @@ struct list{
 typedef struct list list1;
 struct list* list2 = NULL;
 
-int exists(list1* root, char name[100]){
+int exists(list1* root, char name[100], int scope){
     if(root == NULL || root->head == NULL){
         return 0;
     }
     node *t2 = root->head;
     while(t2!=NULL){
-        if(strcmp(t2->name, name) == 0){
+        if(strcmp(t2->name, name) == 0 && t2->scope == scope){
             
             
             return 1;
@@ -68,21 +68,28 @@ int exists(list1* root, char name[100]){
     return 0;
 
 }
-node* find(list1 *root, char name[200]){
+node* find(list1 *root, char name[200], int scope){
     if(root == NULL || root->head == NULL){
         return NULL;
     }
     node *t2 = root->head;
     while(t2!=NULL){
-        if(strcmp(t2->name, name)==0){return t2;}
+        if(strcmp(t2->name, name)==0 && t2->scope == scope){return t2;}
         t2 = t2->next;
+    }
+    t2 = root->head;
+    while(t2!=NULL){
+    	if(strcmp(t2->name, name)==0){
+    		return t2;
+    	}
+    	t2 = t2->next;
     }
     return t2;
 
 }
 node* id_ex;
 void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int value, float fvalue, char cvalue, char type[100]){
-    int out = exists(root, name);
+    int out = exists(root, name, scope);
     
     if(out == 0){
     node *temp = (node*)malloc(sizeof(node));
@@ -111,12 +118,17 @@ void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int
     }
     t2->next = temp;
     return;
+
+}
+else{
+	errors++;
+	printf("Error at line %d: Multiple declarations\n", nl);
 }
 }
 
-void update(list1 *root, char name[100], int value, float fvalue, char cvalue){
+void update(list1 *root, char name[100], int scope,  int value, float fvalue, char cvalue){
     node *t2 = root->head;
-    if(find(root, name) == NULL){
+    if(find(root, name, scope) == NULL){
         return;
     }
     while(strcmp(t2->name, name)!=0){
@@ -143,11 +155,12 @@ void print(node *head){
         if(strcmp(temp->dtype, "int")==0)
 
             printf("|   %d  |   \"%s\"  |   %d  |  %d  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->value, temp->type, temp->dtype);
-        if(strcmp(temp->dtype, "float")==0)
+        else if(strcmp(temp->dtype, "float")==0)
             printf("|   %d  |   \"%s\"  |   %d  |  %.1f  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->fvalue, temp->type, temp->dtype);
-        if(strcmp(temp->dtype, "char")==0)
+        else if(strcmp(temp->dtype, "char")==0)
             printf("|   %d  |   \"%s\"  |   %d  |  %c  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->cvalue, temp->type, temp->dtype);
-
+        else
+            printf("|   %d  |   \"%s\"  |   %d  |  --  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->type, temp->dtype);       	
         temp=temp->next;
     }
 }
@@ -172,7 +185,7 @@ exp_det det1;
 	char *str;
 }
 
-%token IF ELSE WHILE RETURN VOID INT FLOAT CHAR
+%token IF ELSE WHILE RETURN VOID INT FLOAT CHAR FOR
 %token INC_OP DEC_OP PLUS MINUS STAR SLASH  LT LTEQ GT GTEQ EQ NEQ ASSIGN  
 %token SEMI COMMA LPAREN RPAREN LSQUAR RSQUAR LBRACE RBRACE LCOMMENT RCOMMENT 
 %token <str> ID NUM FLT
@@ -182,14 +195,16 @@ exp_det det1;
 %token STR
 %token INSERTION EXTRACTION
 %token CIN COUT
+%token CLASS
 %left PLUS MINUS
 %left STAR SLASH
+
 %nonassoc THEN
 %nonassoc ELSE
 
 
 
-%type<integer> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt expression statement args expression_stmt 
+%type<integer> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt expression statement args expression_stmt for_stmt
 %type<str> relop declaration_specifiers stream_constructs op
 
 
@@ -202,31 +217,37 @@ atree:program {}
 program 
     : external_declaration {$$=$1; }
     | program external_declaration { }
+    | class_declaration{}
+    | program class_declaration{}
     ;
 
 external_declaration
     : var_declaration {$$=$1; }
     | fun_declaration {$$=$1;}
     ;
-
+class_declaration
+	: declaration_specifiers ID LBRACE external_declaration RBRACE SEMI {insert(list2, yylineno, $2, "class", scope, -1, 0.0, '\0', "class");}
 var_declaration
     : declaration_specifiers init_declarator_list SEMI 
     {}
+    | declaration_specifiers array_dec SEMI
     | error SEMI{yyerrok;}
     ;
-
+array_dec
+	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, scope, -1, 0.0, '\0', "ARRAY");}
+	| STAR ID {insert(list2, yylineno, $2, type, scope, -1, 0.0, '\0', "PTR");}
 
 init_declarator_list
     : ID {insert(list2, yylineno, $1, type, scope, -1,0.0,'\0', "IDENT");}
     | ID ASSIGN expression {
                             insert(list2, yylineno, $1, type, scope, -1,0.0,'\0', "IDENT");
-                            update(list2, $1, iexpval, fexpval, cexpval);
+                            update(list2, $1, scope, iexpval, fexpval, cexpval);
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
                         }
     | init_declarator_list COMMA ID{ insert(list2, yylineno, $3, type, scope, -1,0.0,'\0', "IDENT"); }
-    | COUT INSERTION STR SEMI {}
+    
     ;
 
 declarator
@@ -243,6 +264,7 @@ declaration_specifiers
     | VOID {$$="VOID"; strcpy(type, "void");}
     | FLOAT {$$="float"; strcpy(type, "float");}
     | CHAR {$$="char"; strcpy(type, "char");}
+    | CLASS {$$="class"; strcpy(type, "class");}
     ;
 
 params_list
@@ -279,6 +301,7 @@ statement
     | if_stmt {$$=$1;}
     | while_stmt {$$=$1;}
     | return_stmt {$$=$1;}
+    | for_stmt {$$ = $1;}
     | stream_constructs {$<str>$ = $1;}
     ;
 stream_constructs
@@ -293,7 +316,7 @@ cascade_out
 
 cin
 	: CIN EXTRACTION ID SEMI {
-					id_ex = find(list2, $3);
+					id_ex = find(list2, $3, scope);
 					if(id_ex == NULL){
 						printf("Error in Line %d: Usage before Declaration\n", yylineno);
 						errors++;
@@ -322,7 +345,7 @@ op
 	:NUM {$<str>$ = yylval.str;}
 	|STR {$<str>$ = yylval.str;}
 	|ID {
-		id_ex = find(list2, $1);
+		id_ex = find(list2, $1, scope);
 		if(id_ex == NULL){
 			printf("Error in Line %d: Usage before Declaration\n", yylineno);
 			errors++;
@@ -360,21 +383,23 @@ expression
     : assignment_expression {$$=$1;}
     | simple_expression {$$=$1;}
     ;
+for_stmt
+	: FOR LPAREN assignment_expression SEMI simple_expression SEMI unary_expression RPAREN compound_stmt
 
 assignment_expression
     : ID ASSIGN expression {
     						 
-                            int ex = exists(list2,$1); 
+                            int ex = exists(list2,$1, scope); 
                             if(ex == 0) {printf("Error in Line %d: Assignment before Declaration\n", yylineno); errors++;}
-                            id_ex = find(list2, $1);
+                            id_ex = find(list2, $1, scope);
                             if(iflag == 1){
-                            	update(list2, $1, $3, fexpval, cexpval);
+                            	update(list2, $1, scope, $3, fexpval, cexpval);
                             }
                             if(fflag == 1){
-                            	update(list2, $1, iexpval, $3, cexpval);
+                            	update(list2, $1, scope, iexpval, $3, cexpval);
                             }
                             if(cflag == 1){
-                            	update(list2, $1, iexpval, fexpval, $3);
+                            	update(list2, $1, scope, iexpval, fexpval, $3);
                             }
                             iflag = 0;
                             cflag = 0;
@@ -386,7 +411,7 @@ assignment_expression
 
 unary_expression 
     : INC_OP ID { 
-                 id_ex = find(list2, $2); 
+                 id_ex = find(list2, $2, scope); 
                  if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
                     errors++;
@@ -401,7 +426,7 @@ unary_expression
                     }
                 }
     | DEC_OP ID {
-                 id_ex = find(list2, $2); 
+                 id_ex = find(list2, $2, scope); 
                  if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
                     errors++;}
@@ -420,7 +445,7 @@ unary_expression
 
 postfix_expression
     : ID INC_OP {
-                 id_ex = find(list2, $1); 
+                 id_ex = find(list2, $1, scope); 
                  if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
                     errors++;
@@ -435,7 +460,7 @@ postfix_expression
                     }
                 }
     | ID DEC_OP {
-                 id_ex = find(list2, $1); 
+                 id_ex = find(list2, $1, scope); 
                  if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
                     errors++;
@@ -518,7 +543,7 @@ factor
     : LPAREN expression RPAREN {$$=$2; }
     | ID {
 
-          id_ex = find(list2, $1);
+          id_ex = find(list2, $1, scope);
           if(id_ex == NULL){
             printf("Error on %d, Assignment RHS not declared\n", yylineno);
             errors++;
