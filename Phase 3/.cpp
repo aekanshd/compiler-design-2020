@@ -8,13 +8,15 @@ int main()
 	char x;
 	//c = d+e;
 	int p = 4;
-	p++;
-	int p, q, r;
+	p--;
+	++p;
+	--p;
+	//int p=200, q, r;
 
 	//printf("Hi\n");
 	//int =5;
 	//int int;
-	x = 100;
+	a=p;
 	
 	//printf("Hello World!\n");
 }

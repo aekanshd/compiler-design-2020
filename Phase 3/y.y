@@ -18,6 +18,10 @@ extern FILE *yyin;
 extern FILE *yyout;
 extern int yylineno;
 
+int iasval, itermval, iexpval;
+char casval, ctermval, cexpval;
+float fasval, ftermval, fexpval;
+int cflag=0, iflag=0, fflag=0;
 char* tab="  ";
 char indent[100]="";
 char type[200];
@@ -71,6 +75,8 @@ struct node{
     char dtype[200];
     int scope;
     int value;
+    float fvalue;
+    char cvalue;
     char type[100];
     struct node *next;
 
@@ -112,7 +118,7 @@ node* find(list1 *root, char name[200]){
 
 }
 node* id_ex;
-void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int value, char type[100]){
+void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int value, float fvalue, char cvalue, char type[100]){
     int out = exists(root, name);
     
     if(out == 0){
@@ -120,7 +126,15 @@ void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int
     temp->nl = nl;
     temp->scope = scope;
     strcpy(temp->dtype, dtype);
-    temp->value = value;
+    if(strcmp(type, "int") == 0)
+        
+        temp->value = value;
+    else if(strcmp(type, "float")==0)
+        
+        temp->fvalue = fvalue;
+    else if(strcmp(type, "char")==0)
+        
+        temp->cvalue = cvalue;
     strcpy(temp->name, name);
     strcpy(temp->type, type);
     temp->next = NULL;
@@ -137,7 +151,7 @@ void insert(list1 *root, int nl, char name[100], char dtype[200], int scope, int
 }
 }
 
-void update(list1 *root, char name[100], int value){
+void update(list1 *root, char name[100], int value, float fvalue, char cvalue){
     node *t2 = root->head;
     if(find(root, name) == NULL){
         return;
@@ -145,7 +159,13 @@ void update(list1 *root, char name[100], int value){
     while(strcmp(t2->name, name)!=0){
         t2 = t2->next;
     }
-    t2->value = value;
+    if(strcmp(t2->dtype, "int") == 0)
+        t2->value = value;
+    else if(strcmp(t2->dtype, "float")==0)
+        t2->fvalue = fvalue;
+    else if(strcmp(t2->dtype, "char")==0)
+        t2->cvalue = cvalue;
+    
     return;
 }
 struct treeNode * newnode(int lineNo, char* nodeType, char* string, char* value, char* dataType, int Nchildren, ...){
@@ -169,11 +189,19 @@ struct treeNode * newnode(int lineNo, char* nodeType, char* string, char* value,
 void print(node *head){
     // printf("1\n");
     node *temp = head;
-    printf("______________________________________\n");
-    printf("| Line | Name | Scope | value | type |\n");
-    printf("--------------------------------------\n");
+    printf("____________________________________________________\n");
+    printf("| Line | Name | Scope | value | id_type | datatype |\n");
+    printf("----------------------------------------------------\n");
     while(temp!=NULL){
-        printf("|   %d  |   \"%s\"  |   %d  |  %d  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->value, temp->type);
+
+        if(strcmp(temp->dtype, "int")==0)
+
+            printf("|   %d  |   \"%s\"  |   %d  |  %d  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->value, temp->type, temp->dtype);
+        if(strcmp(temp->dtype, "float")==0)
+            printf("|   %d  |   \"%s\"  |   %d  |  %.1f  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->fvalue, temp->type, temp->dtype);
+        if(strcmp(temp->dtype, "char")==0)
+            printf("|   %d  |   \"%s\"  |   %d  |  %c  |  %s  |  %s  |\n", temp->nl, temp->name, temp->scope, temp->cvalue, temp->type, temp->dtype);
+
         temp=temp->next;
     }
 }
@@ -236,9 +264,15 @@ var_declaration
     ;
 
 init_declarator_list
-    : ID {$$ = newnode(yylineno, "init_declarator_list", $1, none, none, 0);insert(list2, yylineno, $1, type, scope, -1, "IDENT");}
-    | ID ASSIGN expression {$$ = newnode(yylineno,"init_declarator_list", $1, none, none,  1, $3);insert(list2, yylineno, $1, type, scope, -1, "IDENT"); }
-    | init_declarator_list COMMA ID{$$ = newnode(yylineno,"init_declarator_list", $3, none, none,  1, $1); insert(list2, yylineno, $3, type, scope, -1, "IDENT"); }
+    : ID {$$ = newnode(yylineno, "init_declarator_list", $1, none, none, 0);insert(list2, yylineno, $1, type, scope, -1, 0.0, '\0',"IDENT");}
+    | ID ASSIGN expression {$$ = newnode(yylineno,"init_declarator_list", $1, none, none,  1, $3);
+                            insert(list2, yylineno, $1, type, scope, -1,0.0,'\0', "IDENT");
+                            update(list2, $1, iexpval, fexpval, cexpval);
+                            iflag = 0;
+                            fflag = 0;
+                            cflag = 0; 
+                        }
+    | init_declarator_list COMMA ID{$$ = newnode(yylineno,"init_declarator_list", $3, none, none,  1, $1); insert(list2, yylineno, $3, type, scope, -1,0.0,'\0', "IDENT"); }
     ;
 
 declarator
@@ -319,18 +353,69 @@ expression
     ;
 
 assignment_expression
-    : ID ASSIGN expression {$$ = newnode(yylineno,"assignment_expression", $1, none, none,  1, $3); int ex = exists(list2,$1); if(ex == 0){yyerror("Assignment before Declaration");}}
+    : ID ASSIGN expression {$$ = newnode(yylineno,"assignment_expression", $1, none, none,  1, $3); 
+                            int ex = exists(list2,$1); 
+                            if(ex == 0) yyerror("Assignment before Declaration");
+                            id_ex = find(list2, $1);
+                            iflag = 0;
+                            cflag = 0;
+                            fflag = 0;
+                            update(list2, $1, iexpval, fexpval, cexpval);
+
+                        }
     | unary_expression  {$$=$1;}    ;
 
 unary_expression 
-    : INC_OP ID {$$ = newnode(yylineno,"unary_expression", $2, none, "++",  0); id_ex = find(list2, $2);}
-    | DEC_OP ID {$$ = newnode(yylineno,"unary_expression", $2, none, "--",  0);}
+    : INC_OP ID {$$ = newnode(yylineno,"unary_expression", $2, none, "++",  0); 
+                 id_ex = find(list2, $2); 
+                 if(id_ex==NULL)
+                    printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                else {
+                    if(strcmp(id_ex->dtype, "int")!=0)
+                        printf("Error on Line %d: Type Mismatch\n", yylineno);
+                    else
+                        ++id_ex->value;
+                    }
+                }
+    | DEC_OP ID {$$ = newnode(yylineno,"unary_expression", $2, none, "--",  0);
+                 id_ex = find(list2, $2); 
+                 if(id_ex==NULL)
+                    printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                else {
+                    if(strcmp(id_ex->dtype, "int")!=0)
+                        printf("Error on Line %d: Type Mismatch\n", yylineno);
+                    else
+                        --id_ex->value;
+                    }
+
+                }
     | postfix_expression {$$=$1;}
     ;
 
 postfix_expression
-    : ID INC_OP {$$ = newnode(yylineno,"postfix_expression", $1, none, "++",  0);}
-    | ID DEC_OP {$$ = newnode(yylineno,"postfix_expression", $1, none, "--",  0);}
+    : ID INC_OP {$$ = newnode(yylineno,"postfix_expression", $1, none, "++",  0);
+                 id_ex = find(list2, $1); 
+                 if(id_ex==NULL)
+                    printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                else {
+                    if(strcmp(id_ex->dtype, "int")!=0)
+                        printf("Error on Line %d: Type Mismatch\n", yylineno);
+                    else
+                        id_ex->value++;
+                    }
+                }
+    | ID DEC_OP {$$ = newnode(yylineno,"postfix_expression", $1, none, "--",  0);
+                 id_ex = find(list2, $1); 
+                 if(id_ex==NULL)
+                    printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                else {
+                    if(strcmp(id_ex->dtype, "int")!=0)
+                        printf("Error on Line %d: Type Mismatch\n", yylineno);
+                    else
+                        id_ex->value--;
+                    }
+
+                }
     ;
 
 simple_expression
@@ -348,24 +433,64 @@ relop
     ;
 
 additive_expression
-    : term {$$=$1;}
-    | additive_expression PLUS term {$$ = newnode(yylineno,"additive_expression", none, none, "+",  2, $1, $3);}
+    : term {$$=$1; 
+            if(iflag == 1)
+                iexpval = itermval;
+            if(fflag == 1)
+                fexpval = ftermval;
+            if(cflag == 1)
+                cexpval = ctermval;
+        }
+    | additive_expression PLUS term {$$ = newnode(yylineno,"additive_expression", none, none, "+",  2, $1, $3); }
     | additive_expression MINUS term {$$ = newnode(yylineno,"additive_expression", none, none, "-",  2, $1, $3);}
     | PLUS additive_expression %prec STAR {$$ = newnode(yylineno,"additive_expression", none, none, "+",  1, $2);}
     | MINUS additive_expression %prec STAR {$$ = newnode(yylineno,"additive_expression", none, none, "-",  1, $2);}
     ;
 
 term
-    : factor {$$=$1;}
+    : factor {$$=$1; 
+              if(iflag == 1)
+                itermval = iasval;
+              if(fflag == 1)
+                ftermval = fasval;
+              if(cflag == 1)
+                ctermval = casval;
+            }
     | term STAR factor {$$ = newnode(yylineno,"term", none, none, "*",  2, $1, $3);}
     | term SLASH factor {$$ = newnode(yylineno,"term", none, none, "/",  2, $1, $3);}
     ;
 
 factor
     : LPAREN expression RPAREN {$$=$2;}
-    | ID {$$ = newnode(yylineno,"factor", $1, none, none,  0);}
+    | ID {$$ = newnode(yylineno,"factor", $1, none, none,  0);
+          id_ex = find(list2, $1);
+          if(id_ex == NULL)
+            printf("Error on %d, Assignment RHS not declared\n", yylineno);
+          else{
+            if(strcmp(id_ex->dtype, "int")==0) 
+            {
+                iasval = id_ex->value;
+                iflag = 1;
+                cflag = 0;
+                fflag = 0;
+            }
+            if(strcmp(id_ex->dtype, "float")==0){
+                fasval = id_ex->fvalue;
+                iflag = 0;
+                fflag = 1;
+                cflag = 0;
+            }
+            if(strcmp(id_ex->dtype, "char")==0){
+                casval = id_ex->cvalue;
+                iflag = 0;
+                fflag = 0;
+                cflag = 1;
+            }
+          }}
     | call {$$=$1;}
-    | NUM {$$ = newnode(yylineno,"factor", none, $1, none,  0); }
+    | NUM {$$ = newnode(yylineno,"factor", none, $1, none,  0); 
+           iasval = atoi(yylval.str); iflag = 1; cflag=0; fflag=0;
+           }
     ;
     
 call
