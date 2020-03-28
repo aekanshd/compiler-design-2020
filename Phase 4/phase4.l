@@ -3,6 +3,7 @@ NZ  [1-9]
 L   [a-zA-Z_]
 A   [a-zA-Z_0-9]
 WS  [ \t\v\n\f]
+TE  [a-zA-Z_0-9!@#$%^&* \t\v\n\f]
 %option yylineno
 
 %{  
@@ -51,7 +52,11 @@ static void comment(void);
 ">="				{printToken("GTEQ");return GTEQ;} 
 "=="				{printToken("EQ");return EQ;} 
 "!="				{printToken("NEQ");return NEQ;} 
-"="				{printToken("ASSIGN");return ASSIGN;}     
+"="				{printToken("ASSIGN");return ASSIGN;}
+"<<"            {printToken("INSERTION"); return INSERTION;}
+">>"            {printToken("EXTRACTION"); return EXTRACTION;}
+"cin"           {printToken("CIN"); return CIN;}
+"cout"          {printToken("COUT"); return COUT;}
 
 ("[")				{printToken("LSQUAR");return LSQUAR; }
 ("]")				{printToken("RSQUAR");return RSQUAR;}
@@ -61,11 +66,11 @@ static void comment(void);
 ","				{printToken("COMMA");return COMMA;}
 "("				{printToken("LPAREN");return LPAREN;}
 ")"				{printToken("RPAREN");return RPAREN; }
-
+"endl"          {printToken("ENDL"); return ENDL;}
 {L}{A}*					{printToken("ID");yylval.str = strdup(yytext); return ID;}
 {D}+			{printToken("NUMBER");yylval.str = strdup(yytext); return NUM;}
 {D}*"."{D}+     {printToken("FLOATINGPOINT");yylval.str = strdup(yytext); return FLT;}
-
+\"{TE}*{WS}*\"       {printToken("String"); yylval.str = strdup(yytext); return STR;}
 {WS}+					{}
 .					{}
 

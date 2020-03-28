@@ -178,15 +178,19 @@ exp_det det1;
 %token <str> ID NUM FLT
 %token LETTER DIGIT
 %token NONTOKEN ERROR ENDFILE
-%token NL
-
+%token NL ENDL
+%token STR
+%token INSERTION EXTRACTION
+%token CIN COUT
 %left PLUS MINUS
 %left STAR SLASH
 %nonassoc THEN
 %nonassoc ELSE
 
+
+
 %type<integer> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt expression statement args expression_stmt 
-%type<str> relop declaration_specifiers 
+%type<str> relop declaration_specifiers stream_constructs op
 
 
 %start atree
@@ -198,21 +202,19 @@ atree:program {}
 program 
     : external_declaration {$$=$1; }
     | program external_declaration { }
-
     ;
 
 external_declaration
-    : var_declaration {$$=$1;}
+    : var_declaration {$$=$1; }
     | fun_declaration {$$=$1;}
-
     ;
 
 var_declaration
     : declaration_specifiers init_declarator_list SEMI 
     {}
     | error SEMI{yyerrok;}
-
     ;
+
 
 init_declarator_list
     : ID {insert(list2, yylineno, $1, type, scope, -1,0.0,'\0', "IDENT");}
@@ -224,6 +226,7 @@ init_declarator_list
                             cflag = 0; 
                         }
     | init_declarator_list COMMA ID{ insert(list2, yylineno, $3, type, scope, -1,0.0,'\0', "IDENT"); }
+    | COUT INSERTION STR SEMI {}
     ;
 
 declarator
@@ -232,7 +235,7 @@ declarator
     ;
 
 fun_declaration
-    : declaration_specifiers ID declarator compound_stmt {}
+    : declaration_specifiers ID declarator compound_stmt {insert(list2, yylineno, $2, type, scope, -1, 0.0, '\0', "FUNCT");}
     ;
 
 declaration_specifiers
@@ -276,7 +279,62 @@ statement
     | if_stmt {$$=$1;}
     | while_stmt {$$=$1;}
     | return_stmt {$$=$1;}
+    | stream_constructs {$<str>$ = $1;}
     ;
+stream_constructs
+	: cout_cascade
+	| cin
+cout_cascade
+	: COUT cascade_out SEMI
+cascade_out
+	: INSERTION op {if(errors==0) printf("%s", $2);}
+	| INSERTION op cascade_out {if(errors==0) printf("%s", $2);}
+	| INSERTION op INSERTION ENDL {if(errors==0) printf("%s\n", $2);}
+
+cin
+	: CIN EXTRACTION ID SEMI {
+					id_ex = find(list2, $3);
+					if(id_ex == NULL){
+						printf("Error in Line %d: Usage before Declaration\n", yylineno);
+						errors++;
+					}
+					else{
+						int a;
+						char b;
+						float c;
+						if(strcmp(id_ex->dtype, "int") == 0){
+
+							scanf("%d", &a);
+							id_ex->value = a;
+						}
+						if(strcmp(id_ex->dtype, "float") == 0){
+							scanf("%f", &c);
+							id_ex->fvalue = c;
+						}
+						if(strcmp(id_ex->dtype, "char")==0){
+							scanf("%c", &b);
+							id_ex->cvalue = b;
+						}
+					}
+					}
+
+op
+	:NUM {$<str>$ = yylval.str;}
+	|STR {$<str>$ = yylval.str;}
+	|ID {
+		id_ex = find(list2, $1);
+		if(id_ex == NULL){
+			printf("Error in Line %d: Usage before Declaration\n", yylineno);
+			errors++;
+		}
+		else{
+			if(strcmp(id_ex->dtype, "int") == 0) $<str>$ = id_ex->value;
+			if(strcmp(id_ex->dtype, "float") == 0) $<ft>$ = id_ex->fvalue;
+			if(strcmp(id_ex->dtype, "char") == 0) $<str>$ = id_ex->cvalue;
+
+		}
+
+	}
 
 expression_stmt
     : SEMI {}
@@ -424,6 +482,7 @@ relop
 
 additive_expression
     : term {$$=$1; 
+
             if(iflag == 1)
                 iexpval = itermval;
             if(fflag == 1)
@@ -440,6 +499,7 @@ additive_expression
 
 term
     : factor {
+
               if(iflag == 1)
               	$<integer>$ = iasval;
                 itermval = iasval;
@@ -455,8 +515,9 @@ term
     ;
 
 factor
-    : LPAREN expression RPAREN {$$=$2;}
+    : LPAREN expression RPAREN {$$=$2; }
     | ID {
+
           id_ex = find(list2, $1);
           if(id_ex == NULL){
             printf("Error on %d, Assignment RHS not declared\n", yylineno);
@@ -499,6 +560,7 @@ factor
     	fasval = atof(yylval.str); fflag = 1; cflag = 0; iflag = 0;
     	$<ft>$ = fasval;
     	}
+    |STR {}
     ;
     
 call
