@@ -25,13 +25,14 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Valid Actions for grammar productions (Done)
     - use yyloc to print the error tokens (Pending)
     - Error Handing and Error Recovery (Done)
- ## 3. Phase 3 Semantic Analysis<br>
+ ## 3. Phase 3 Semantic Analysis
     - Type Checking, Declare before use (Done)
-    - Evaluate if, for, while (Pending)
+    - Evaluate if, for, while (Done)
+    - Local variables should be destroyed after exiting block (Pending) - Varun
     - break statements, access control (Pending)
  ## 4. Phase 4 Intermediate Code Generation
-    - Generate three address code (Pending)
-    - Quadruple format (Pending)
+    - Generate three address code (Pending) - Aekansh/Ravi
+    - Quadruple format (Pending) 
     - Insert Temporaries to Symbol Table (Pending)
 ##  5. Phase 5 Intermediate Code Optimization
     - Eliminate dead code (Pending)
