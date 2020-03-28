@@ -30,7 +30,7 @@ char* floating="float";
 char* none = "none";
 char* assign = "=";
 int expval=0;
-
+int errors = 0;
 
 struct node{
     int nl;
@@ -175,7 +175,7 @@ exp_det det1;
 %token IF ELSE WHILE RETURN VOID INT FLOAT CHAR
 %token INC_OP DEC_OP PLUS MINUS STAR SLASH  LT LTEQ GT GTEQ EQ NEQ ASSIGN  
 %token SEMI COMMA LPAREN RPAREN LSQUAR RSQUAR LBRACE RBRACE LCOMMENT RCOMMENT 
-%token <str> ID NUM
+%token <str> ID NUM FLT
 %token LETTER DIGIT
 %token NONTOKEN ERROR ENDFILE
 %token NL
@@ -194,8 +194,9 @@ exp_det det1;
 
 atree:program {}
 
+
 program 
-    : external_declaration {$$=$1;}
+    : external_declaration {$$=$1; }
     | program external_declaration { }
 
     ;
@@ -207,8 +208,9 @@ external_declaration
     ;
 
 var_declaration
-    : declaration_specifiers init_declarator_list SEMI
+    : declaration_specifiers init_declarator_list SEMI 
     {}
+    | error SEMI{yyerrok;}
 
     ;
 
@@ -302,14 +304,24 @@ expression
     ;
 
 assignment_expression
-    : ID ASSIGN expression { 
+    : ID ASSIGN expression {
+    						 
                             int ex = exists(list2,$1); 
-                            if(ex == 0) yyerror("Assignment before Declaration");
+                            if(ex == 0) {printf("Error in Line %d: Assignment before Declaration\n", yylineno); errors++;}
                             id_ex = find(list2, $1);
+                            if(iflag == 1){
+                            	update(list2, $1, $3, fexpval, cexpval);
+                            }
+                            if(fflag == 1){
+                            	update(list2, $1, iexpval, $3, cexpval);
+                            }
+                            if(cflag == 1){
+                            	update(list2, $1, iexpval, fexpval, $3);
+                            }
                             iflag = 0;
                             cflag = 0;
                             fflag = 0;
-                            update(list2, $1, iexpval, fexpval, cexpval);
+                            
 
                         }
     | unary_expression  {$$=$1;}    ;
@@ -317,22 +329,29 @@ assignment_expression
 unary_expression 
     : INC_OP ID { 
                  id_ex = find(list2, $2); 
-                 if(id_ex==NULL)
+                 if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                    errors++;
+                    }
                 else {
-                    if(strcmp(id_ex->dtype, "int")!=0)
+                    if(strcmp(id_ex->dtype, "int")!=0){
                         printf("Error on Line %d: Type Mismatch\n", yylineno);
+                        errors++;
+                        }
                     else
                         ++id_ex->value;
                     }
                 }
     | DEC_OP ID {
                  id_ex = find(list2, $2); 
-                 if(id_ex==NULL)
+                 if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                    errors++;}
                 else {
-                    if(strcmp(id_ex->dtype, "int")!=0)
+                    if(strcmp(id_ex->dtype, "int")!=0){
                         printf("Error on Line %d: Type Mismatch\n", yylineno);
+                        errors++;
+                        }
                     else
                         --id_ex->value;
                     }
@@ -344,22 +363,30 @@ unary_expression
 postfix_expression
     : ID INC_OP {
                  id_ex = find(list2, $1); 
-                 if(id_ex==NULL)
+                 if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                    errors++;
+                    }
                 else {
-                    if(strcmp(id_ex->dtype, "int")!=0)
+                    if(strcmp(id_ex->dtype, "int")!=0){
                         printf("Error on Line %d: Type Mismatch\n", yylineno);
+                        errors++;
+                        }
                     else
                         id_ex->value++;
                     }
                 }
     | ID DEC_OP {
                  id_ex = find(list2, $1); 
-                 if(id_ex==NULL)
+                 if(id_ex==NULL){
                     printf("Error on Lineno %d: Increment operator cannot be applied to an identifier that's not declared\n", yylineno);
+                    errors++;
+                    }
                 else {
-                    if(strcmp(id_ex->dtype, "int")!=0)
+                    if(strcmp(id_ex->dtype, "int")!=0){
                         printf("Error on Line %d: Type Mismatch\n", yylineno);
+                        errors++;
+                        }
                     else
                         id_ex->value--;
                     }
@@ -370,20 +397,20 @@ postfix_expression
 simple_expression
     : additive_expression {$$=$1;}
     | additive_expression relop additive_expression {
-    													if(strcmp($2, "<")==0)
-    														$<integer>$ = $1<$3;
-    													if(strcmp($2, "<=")==0)
-    														$<integer>$ = $1<=$3;
-    													if(strcmp($2, ">")==0)
-    														$<integer>$ = $1>$3;
-    													if(strcmp($2, ">=")==0)
-    														$<integer>$ = $1>=$3;
-    													if(strcmp($2, "==")==0)
-    														$<integer>$ = $1==$3;
-    													if(strcmp($2, "!=")==0)
-    														$<integer>$ = $1!=$3;
+				if(strcmp($2, "<")==0)
+					$<integer>$ = $1<$3;
+				if(strcmp($2, "<=")==0)
+					$<integer>$ = $1<=$3;
+				if(strcmp($2, ">")==0)
+					$<integer>$ = $1>$3;
+				if(strcmp($2, ">=")==0)
+					$<integer>$ = $1>=$3;
+				if(strcmp($2, "==")==0)
+					$<integer>$ = $1==$3;
+				if(strcmp($2, "!=")==0)
+					$<integer>$ = $1!=$3;
 
-    												}
+    		}
     ;
 
 relop 
@@ -403,8 +430,9 @@ additive_expression
                 fexpval = ftermval;
             if(cflag == 1)
                 cexpval = ctermval;
+
         }
-    | additive_expression PLUS term {$$ = $1 + $3; }
+    | additive_expression PLUS term {$$ = $1 + $3;}
     | additive_expression MINUS term {$$ = $1 - $3;}
     | PLUS additive_expression %prec STAR {}
     | MINUS additive_expression %prec STAR {}
@@ -432,6 +460,7 @@ factor
           id_ex = find(list2, $1);
           if(id_ex == NULL){
             printf("Error on %d, Assignment RHS not declared\n", yylineno);
+            errors++;
             $$ = 0;}
           else{
           	//$$ = $1;
@@ -464,8 +493,12 @@ factor
     | NUM { 
            iasval = atoi(yylval.str); iflag = 1; cflag=0; fflag=0;
            $<integer>$ = iasval;
-           printf("The value of $$ is %d\n", $$);
+           
            }
+    |FLT{
+    	fasval = atof(yylval.str); fflag = 1; cflag = 0; iflag = 0;
+    	$<ft>$ = fasval;
+    	}
     ;
     
 call
@@ -510,13 +543,16 @@ list2->head = NULL;
 yyparse();  
 print(list2->head);
 fclose(syntree);
+if(errors>0){
+	printf("%d Errors Found\n", errors);
+}
 return 0; 
 } 
 
 void yyerror(const char *s)
 {
 	fflush(stdout);
-
+	errors++;
 	fprintf(stderr, "Error: %s on line number %d\n", s, yylineno);
 }
 

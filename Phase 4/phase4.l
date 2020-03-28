@@ -3,7 +3,6 @@ NZ  [1-9]
 L   [a-zA-Z_]
 A   [a-zA-Z_0-9]
 WS  [ \t\v\n\f]
-
 %option yylineno
 
 %{  
@@ -65,7 +64,7 @@ static void comment(void);
 
 {L}{A}*					{printToken("ID");yylval.str = strdup(yytext); return ID;}
 {D}+			{printToken("NUMBER");yylval.str = strdup(yytext); return NUM;}
-
+{D}*"."{D}+     {printToken("FLOATINGPOINT");yylval.str = strdup(yytext); return FLT;}
 
 {WS}+					{}
 .					{}
