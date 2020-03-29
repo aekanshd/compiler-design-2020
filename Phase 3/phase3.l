@@ -3,7 +3,7 @@ NZ  [1-9]
 L   [a-zA-Z_]
 A   [a-zA-Z_0-9]
 WS  [ \t\v\n\f]
-
+TE  [a-zA-Z_0-9!@#$%^&* \t\v\n\f]
 %option yylineno
 
 %{  
@@ -28,47 +28,52 @@ static void comment(void);
 "/*"                                    { comment(); }
 "//".*                                    { /* consume //-comment */ }
 
-"if"					{printToken("IF"); return(IF); }
-"else"					{printToken("ELSE"); return(ELSE);}
-"while"					{printToken("WHILE"); return(WHILE);}
-"return"					{printToken("RETURN"); return(RETURN);}
-"void"					{printToken("VOID");yylval.str = strdup(yytext); 
+"if"                    {printToken("IF"); return(IF); }
+"else"                  {printToken("ELSE"); return(ELSE);}
+"while"                 {printToken("WHILE"); return(WHILE);}
+"return"                    {printToken("RETURN"); return(RETURN);}
+"void"                  {printToken("VOID");yylval.str = strdup(yytext); 
                          return(VOID);}
-"int"					{printToken("INT");yylval.str = strdup(yytext); 
+"int"                   {printToken("INT");yylval.str = strdup(yytext); 
                         return(INT);}
-"float"					{printToken("FLOAT");yylval.str = strdup(yytext); 
+"float"                 {printToken("FLOAT");yylval.str = strdup(yytext); 
                         return(FLOAT);}
 "char"                  {printToken("CHAR"); yylval.str=strdup(yytext); return(CHAR);}
+"for"                   {printToken("FOR"); return FOR;}
+"class"                 {printToken("CLASS"); return CLASS;}
+"++"                {printToken("INC_OP");return INC_OP;} 
+"--"                {printToken("DEC_OP");return DEC_OP;} 
+"+"             {printToken("PLUS");return PLUS;}     
+"-"             {printToken("MINUS");return MINUS; }     
+"*"             {printToken("STAR");return STAR; }     
+"/"             {printToken("SLASH");return SLASH; }     
+"<"             {printToken("LT");return LT; }     
+"<="                {printToken("LTEQ"); return LTEQ;} 
+">"             {printToken("GT");return GT;}     
+">="                {printToken("GTEQ");return GTEQ;} 
+"=="                {printToken("EQ");return EQ;} 
+"!="                {printToken("NEQ");return NEQ;} 
+"="             {printToken("ASSIGN");return ASSIGN;}
+"<<"            {printToken("INSERTION"); return INSERTION;}
+">>"            {printToken("EXTRACTION"); return EXTRACTION;}
+"cin"           {printToken("CIN"); return CIN;}
+"cout"          {printToken("COUT"); return COUT;}
 
-"++"				{printToken("INC_OP");return INC_OP;} 
-"--"				{printToken("DEC_OP");return DEC_OP;} 
-"+"				{printToken("PLUS");return PLUS;}     
-"-"				{printToken("MINUS");return MINUS; }     
-"*"				{printToken("STAR");return STAR; }     
-"/"				{printToken("SLASH");return SLASH; }     
-"<"				{printToken("LT");return LT; }     
-"<="				{printToken("LTEQ"); return LTEQ;} 
-">"				{printToken("GT");return GT;}     
-">="				{printToken("GTEQ");return GTEQ;} 
-"=="				{printToken("EQ");return EQ;} 
-"!="				{printToken("NEQ");return NEQ;} 
-"="				{printToken("ASSIGN");return ASSIGN;}     
-
-("[")				{printToken("LSQUAR");return LSQUAR; }
-("]")				{printToken("RSQUAR");return RSQUAR;}
-("{")				{printToken("LBRACE");scope++; return LBRACE;}
-("}")				{printToken("RBRACE");scope--; return RBRACE;}
-";"				{printToken("SEMI");return SEMI;}
-","				{printToken("COMMA");return COMMA;}
-"("				{printToken("LPAREN");return LPAREN;}
-")"				{printToken("RPAREN");return RPAREN; }
-
-{L}{A}*					{printToken("ID");yylval.str = strdup(yytext); return ID;}
-{D}+			{printToken("NUMBER");yylval.str = strdup(yytext); return NUM;}
-
-
-{WS}+					{}
-.					{}
+("[")               {printToken("LSQUAR");return LSQUAR; }
+("]")               {printToken("RSQUAR");return RSQUAR;}
+("{")               {printToken("LBRACE");scope++; return LBRACE;}
+("}")               {printToken("RBRACE");scope--; return RBRACE;}
+";"             {printToken("SEMI");return SEMI;}
+","             {printToken("COMMA");return COMMA;}
+"("             {printToken("LPAREN");return LPAREN;}
+")"             {printToken("RPAREN");return RPAREN; }
+"endl"          {printToken("ENDL"); return ENDL;}
+{L}{A}*                 {printToken("ID");yylval.str = strdup(yytext); return ID;}
+{D}+            {printToken("NUMBER");yylval.str = strdup(yytext); return NUM;}
+{D}*"."{D}+     {printToken("FLOATINGPOINT");yylval.str = strdup(yytext); return FLT;}
+\"{TE}*{WS}*\"       {printToken("String"); yylval.str = strdup(yytext); return STR;}
+{WS}+                   {}
+.                   {printToken("UNKNOWN LEXEME");printToken(yytext);}
 
 
 %%
