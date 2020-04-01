@@ -31,9 +31,9 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Local variables should be destroyed after exiting block (Pending) - Varun
     - break statements, access control (Pending)
  ## 4. Phase 4 Intermediate Code Generation
-    - Generate three address code (Pending) - Aekansh/Ravi
-    - Quadruple format (Pending) 
-    - Insert Temporaries to Symbol Table (Pending)
+    - Generate three address code (Done)
+    - Quadruple format (Done) 
+    - Insert Temporaries to Symbol Table (Done)
 ##  5. Phase 5 Intermediate Code Optimization
     - Eliminate dead code (Pending)
     - Subexpression elimination (Pending)
