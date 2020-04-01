@@ -10,11 +10,11 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Identify Keywords (Done)
     - Lexical Errors (Done)
     - Line Numbers  (Done)
-    - Truncate long identifiers (Done)
+    - Truncate long identifiers (Pending)
     - Symbol Table (Done)
 ##  2. Phase 2 Syntax Analysis<br>
     - Abstract Syntax Tree Construction (Done)
-    - Global & Local Variables Distinction (Done)
+    - Global & Local Variables Distinction (Partially Done)
     - Class Definition (Done)
     - Arrays/Pointers definition (Done)
     - Arithmetic and Boolean Expressions (Done)
