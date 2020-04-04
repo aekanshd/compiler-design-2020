@@ -19,7 +19,7 @@ int main()
 	int c = a + b;
 	if(c<10){a = 50;}
 	
-	/*b = 4+ 10;
+	b = 4+ 10;
 	a = b + 34;
 	int d = a*b;
 	int e = d*c+10;
@@ -50,4 +50,4 @@ int main()
 	//c = a+b*l;
 	//cin>>a;
 	//printf("Hello World!\n");
-	*/}
+	}
