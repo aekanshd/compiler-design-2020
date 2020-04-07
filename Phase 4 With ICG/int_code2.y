@@ -823,7 +823,7 @@ relop
 additive_expression
     : term {$$=$1;
         }
-    | additive_expression PLUS term {
+    | additive_expression PLUS additive_expression {
 
         quadruple* new_record;
         
@@ -838,7 +838,7 @@ additive_expression
         insert(list2, yylineno, temp,"TEMP", scope, $1, "TEMP");
         $$ = temp;
     }
-    | additive_expression MINUS term {
+    | additive_expression MINUS additive_expression{
     	quadruple* new_record;
         
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10];
@@ -852,8 +852,8 @@ additive_expression
         insert(list2, yylineno, temp,"TEMP", scope, $1, "TEMP");
         $$ = temp;
     	}
-    | PLUS additive_expression %prec STAR {}
-    | MINUS additive_expression %prec STAR {}
+    | PLUS additive_expression %prec STAR {$$ = $2;}
+    | MINUS additive_expression %prec STAR {char temp[20];strcpy(temp,"-");strcat(temp,$2);$$ = temp;}
     ;
 
 term

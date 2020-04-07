@@ -117,19 +117,13 @@
   <token line="36" type="SEMI" string=";" />
   <token line="37" type="ID" string="c" />
   <token line="37" type="ASSIGN" string="=" />
-  <token line="37" type="NUMBER" string="2" />
-  <token line="37" type="PLUS" string="+" />
-  <token line="37" type="LPAREN" string="(" />
-  <token line="37" type="NUMBER" string="3" />
-  <token line="37" type="STAR" string="*" />
   <token line="37" type="NUMBER" string="5" />
-  <token line="37" type="RPAREN" string=")" />
   <token line="37" type="PLUS" string="+" />
-  <token line="37" type="LPAREN" string="(" />
-  <token line="37" type="NUMBER" string="8" />
+  <token line="37" type="NUMBER" string="9" />
   <token line="37" type="STAR" string="*" />
-  <token line="37" type="NUMBER" string="17" />
-  <token line="37" type="RPAREN" string=")" />
+  <token line="37" type="NUMBER" string="7" />
+  <token line="37" type="PLUS" string="+" />
+  <token line="37" type="NUMBER" string="6" />
   <token line="37" type="SEMI" string=";" />
   <token line="38" type="FLOAT" string="float" />
   <token line="38" type="ID" string="p" />
