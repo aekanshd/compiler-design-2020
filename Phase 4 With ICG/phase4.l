@@ -10,6 +10,7 @@ TE  [a-zA-Z_0-9!@#$%^&* \t\v\n\f]
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <string.h>
+#include <limits.h> 
 #include "int_code2.tab.h"   
 int yywrap(); 
 int scope = 0;
@@ -21,6 +22,67 @@ fprintf(fp,"  <token line=\"%d\" type=\"%s\" string=\"%s\" />\n",
 	yytext);
     fclose(fp);
 }
+
+struct Stack {
+	int top;
+	unsigned capacity;
+	int* data;
+};
+
+struct Stack* createStack(unsigned capacity)
+{
+	struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+	stack->capacity = capacity;
+	stack->top = -1;
+	stack->data = (int*)malloc(stack->capacity * sizeof(int));
+	return stack;
+}
+
+int isFull(struct Stack* stack)
+{
+	return stack->top == stack->capacity - 1;
+}
+
+int isEmpty(struct Stack* stack)
+{
+	return stack->top == -1;
+}
+
+void push(struct Stack* stack, int item)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isFull(stack))
+		return;
+	stack->data[++stack->top] = item;
+}
+
+int pop(struct Stack* stack)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isEmpty(stack))
+		return INT_MIN;
+	return stack->data[stack->top--];
+}
+
+int peek(struct Stack* stack)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isEmpty(stack))
+		return INT_MIN;
+	return stack->data[stack->top];
+}
+
+struct Stack* stack;
+
 static void comment(void);
 %}
 %%
@@ -61,8 +123,8 @@ static void comment(void);
 
 ("[")               {printToken("LSQUAR");return LSQUAR; }
 ("]")               {printToken("RSQUAR");return RSQUAR;}
-("{")               {printToken("LBRACE");scope++; return LBRACE;}
-("}")               {printToken("RBRACE");scope--; return RBRACE;}
+("{")               {printToken("LBRACE"); scope++; push(stack, scope); return LBRACE;}
+("}")               {printToken("RBRACE"); pop(stack); return RBRACE;}
 ";"             {printToken("SEMI");return SEMI;}
 ","             {printToken("COMMA");return COMMA;}
 "("             {printToken("LPAREN");return LPAREN;}
