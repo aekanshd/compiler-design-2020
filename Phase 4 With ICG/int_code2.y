@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <limits.h> 
 #include "lex.yy.c"
 //typedef char* string;
 //#define YYSTYPE string
+
 #define STR(VAR) (#VAR)
 #define release 1
 #define MAXCHILD 10
@@ -32,6 +34,64 @@ int expval=0;
 int errors = 0;
 
 
+struct Stack {
+	int top;
+	unsigned capacity;
+	int* data;
+};
+
+struct Stack* createStack(unsigned capacity)
+{
+	struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+	stack->capacity = capacity;
+	stack->top = -1;
+	stack->data = (int*)malloc(stack->capacity * sizeof(int));
+	return stack;
+}
+
+int isFull(struct Stack* stack)
+{
+	return stack->top == stack->capacity - 1;
+}
+
+int isEmpty(struct Stack* stack)
+{
+	return stack->top == -1;
+}
+
+void push(struct Stack* stack, int item)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isFull(stack))
+		return;
+	stack->data[++stack->top] = item;
+}
+
+int pop(struct Stack* stack)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isEmpty(stack))
+		return INT_MIN;
+	return stack->data[stack->top--];
+}
+
+int peek(struct Stack* stack)
+{
+    if(stack == NULL) {
+        stack = createStack(100);
+        push(stack, 0);
+    }
+	if (isEmpty(stack))
+		return INT_MIN;
+	return stack->data[stack->top];
+}
+
 /*Data Structure to store quadruples*/
 struct quadruple{
     char statement[30];
@@ -48,7 +108,7 @@ struct quad_list{
     quadruple* head;
 };
 typedef struct quad_list quad_list;
-quad_list* q_list1; 
+quad_list* q_list1;
 
 quadruple* create_quadruple(char* statement,char* op, char* arg1, char* arg2, char* res, int lineno) {
     quadruple* new_quadruple = (quadruple*)malloc(sizeof(quadruple));
@@ -80,7 +140,7 @@ char* get_three_add(quadruple* record) {
         sprintf(res,"%s = %s %s %s",record->res,record->arg1,record->op,record->arg2);
     }
     else if(strcmp(record->statement,"assignment") == 0){
-        sprintf(res,"%s = %s %s",record->res,record->op,record->arg1);    
+        sprintf(res,"%s = %s %s",record->res,record->op,record->arg1);   
     }
     else if(strcmp(record->statement,"conditional_goto") == 0){
         sprintf(res,"if %s %s %s goto %s",record->arg1,record->op,record->arg2,record->res);
@@ -317,7 +377,7 @@ external_declaration
     | fun_declaration {$$=$1;}
     ;
 class_declaration
-	: declaration_specifiers ID LBRACE external_declaration RBRACE SEMI {insert(list2, yylineno, $2, "class", scope, " ", "class");}
+	: declaration_specifiers ID LBRACE external_declaration RBRACE SEMI {insert(list2, yylineno, $2, "class", peek(stack), " ", "class");}
 var_declaration
     : declaration_specifiers init_declarator_list SEMI 
     {}
@@ -325,31 +385,31 @@ var_declaration
     | error SEMI{yyerrok;}
     ;
 array_dec
-	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, scope, " ", "ARRAY");}
-	| STAR ID {insert(list2, yylineno, $2, type, scope, " ", "PTR");}
+	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, peek(stack), " ", "ARRAY");}
+	| STAR ID {insert(list2, yylineno, $2, type, peek(stack), " ", "PTR");}
 
 init_declarator_list
-    : ID {insert(list2, yylineno, $1, type, scope, " ", "IDENT");}
+    : ID {insert(list2, yylineno, $1, type, peek(stack), " ", "IDENT");}
     | ID ASSIGN expression {
                             char arg1[10];
                             sprintf(arg1,"%s",$3);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$1, yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, $1, type, scope, " ", "IDENT");
-                            update(list2, $1, scope, $3);
+                            insert(list2, yylineno, $1, type, peek(stack), " ", "IDENT");
+                            update(list2, $1, peek(stack), $3);
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
                         }
-    | init_declarator_list COMMA ID { insert(list2, yylineno, $3, type, scope, " ", "IDENT"); 
+    | init_declarator_list COMMA ID { insert(list2, yylineno, $3, type, peek(stack), " ", "IDENT"); 
     }
     | init_declarator_list COMMA ID ASSIGN expression {
                             char arg1[10];
                             sprintf(arg1,"%s",$5);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$3, yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, $3, type, scope, " ", "IDENT");
-                            update(list2, $3, scope, $5);
+                            insert(list2, yylineno, $3, type, peek(stack), " ", "IDENT");
+                            update(list2, $3, peek(stack), $5);
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
@@ -363,7 +423,7 @@ declarator
     ;
 
 fun_declaration
-    : declaration_specifiers ID declarator compound_stmt {insert(list2, yylineno, $2, type, scope, " ", "FUNCT");}
+    : declaration_specifiers ID declarator compound_stmt {insert(list2, yylineno, $2, type, peek(stack), " ", "FUNCT");}
     ;
 
 declaration_specifiers
@@ -423,7 +483,7 @@ cascade_out
 
 cin
 	: CIN EXTRACTION ID SEMI {
-					id_ex = find(list2, $3, scope);
+					id_ex = find(list2, $3, peek(stack));
 					if(id_ex == NULL){
 						printf("Error in Line %d : Usage before Declaration\n", yylineno);
 						errors++;
@@ -452,7 +512,7 @@ op
 	:NUM {$<str>$ = yylval.str;}
 	|STR {$<str>$ = yylval.str;}
 	|ID {
-		id_ex = find(list2, $1, scope);
+		id_ex = find(list2, $1, peek(stack));
 		if(id_ex == NULL){
 			printf("Error in Line %d : Usage before Declaration\n", yylineno);
 			errors++;
@@ -960,14 +1020,15 @@ list2->head = NULL;
 q_list1 = (quad_list*)malloc(sizeof(quad_list));
 q_list1->head = NULL;
 yyparse();  
-print(list2->head);
-fclose(syntree);
+// print(list2->head);
+// fclose(syntree);
 
 if(errors>0){
 	printf("%d Errors Found\n", errors);
 } else {
     //display_three_add(q_list1);
 }
+
 return 0; 
 } 
 
