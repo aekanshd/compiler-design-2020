@@ -3,14 +3,6 @@
 //int p = 0;
 
 int q = 0;
-
-
-
-
-
-
-
-
 int main()
 {
 	//int c = 2+3*5;
@@ -21,20 +13,11 @@ int main()
 	
 	b = 4+ 10;
 	a = b + 34;
-	int d = a*b;
-	int e = d*c+10;
-	++e;
-	int = 5;
-	float d;
-	int p;
-	int p;
-	int *p;
-	char c2[100];
-	char x;
-	int c = 20;
+	
+	
 	if(c<10){}
 	c = 4+c;
-	c = 5+9*7;
+	//c = 5+9*7;
 	float p = 9.7;
 	//p--;
 	//++p;
@@ -42,8 +25,7 @@ int main()
 	int p=200;
 	if(p<5) a=10;
 	cout<<"Hi"<<endl;
-	int i;
-	for(i=0;i<10;i++){}
+	for(int i=0;i<10;i++){}
 	int =5;
 	int int;
 	a=p;

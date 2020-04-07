@@ -32,10 +32,7 @@ char* none = "none";
 char* assign = "=";
 int expval=0;
 int errors = 0;
-int INT_MIN = -32767
-//Stack
-
-
+/*Stack*/
 struct Stack {
 	int top;
 	unsigned capacity;
@@ -79,7 +76,7 @@ int pop(struct Stack* stack)
         push(stack, 0);
     }
 	if (isEmpty(stack))
-		return INT_MIN;
+		return -32767;
 	return stack->data[stack->top--];
 }
 
@@ -90,72 +87,13 @@ int peek(struct Stack* stack)
         push(stack, 0);
     }
 	if (isEmpty(stack))
-		return INT_MIN;
+		return -32767;
 	return stack->data[stack->top];
 }
 
 struct Stack* stack;
 
-static void comment(void);
 
-
-struct Stack {
-	int top;
-	unsigned capacity;
-	int* data;
-};
-
-struct Stack* createStack(unsigned capacity)
-{
-	struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
-	stack->capacity = capacity;
-	stack->top = -1;
-	stack->data = (int*)malloc(stack->capacity * sizeof(int));
-	return stack;
-}
-
-int isFull(struct Stack* stack)
-{
-	return stack->top == stack->capacity - 1;
-}
-
-int isEmpty(struct Stack* stack)
-{
-	return stack->top == -1;
-}
-
-void push(struct Stack* stack, int item)
-{
-    if(stack == NULL) {
-        stack = createStack(100);
-        push(stack, 0);
-    }
-	if (isFull(stack))
-		return;
-	stack->data[++stack->top] = item;
-}
-
-int pop(struct Stack* stack)
-{
-    if(stack == NULL) {
-        stack = createStack(100);
-        push(stack, 0);
-    }
-	if (isEmpty(stack))
-		return INT_MIN;
-	return stack->data[stack->top--];
-}
-
-int peek(struct Stack* stack)
-{
-    if(stack == NULL) {
-        stack = createStack(100);
-        push(stack, 0);
-    }
-	if (isEmpty(stack))
-		return INT_MIN;
-	return stack->data[stack->top];
-}
 
 /*Data Structure to store quadruples*/
 struct quadruple{
@@ -676,9 +614,14 @@ for_stmt
 	} 
 	simple_expression SEMI for_update RPAREN { 
         quadruple* new_record;
-        char break_label[10];
+        char break_label[10],body_label[10];
+        strcpy(body_label,create_label());
         strcpy(break_label,create_label());
-        new_record = create_quadruple("conditional_goto",$<str>7,"","",break_label, yylineno);
+        new_record = create_quadruple("conditional_goto",$<str>7,"","",body_label, yylineno);
+        insert_quadruple(q_list1,new_record);
+        new_record = create_quadruple("goto","","","",break_label, yylineno);
+        insert_quadruple(q_list1,new_record); 
+        new_record = create_quadruple("label","","","",body_label, yylineno);
         insert_quadruple(q_list1,new_record);
         $<str>$=break_label;
         scope--;
@@ -687,9 +630,9 @@ for_stmt
         strcpy(update_stmt,$<str>9);
         strcpy(iterable,strtok(update_stmt, " "));
         strcpy(operator,strtok(NULL," "));
-        strcpy(update_value,$<str>9);
+        strcpy(update_value,strtok(NULL," "));
         id_ex = find(list2, iterable, scope+1);
-        update(list2, id_ex->name,scope+1,update_value);
+        update(list2, id_ex->name,scope+1,update_stmt);
         quadruple* new_record;
         new_record = create_quadruple("expression",operator,iterable,update_value,iterable, yylineno);
         insert_quadruple(q_list1,new_record);
@@ -1085,7 +1028,7 @@ list2->head = NULL;
 q_list1 = (quad_list*)malloc(sizeof(quad_list));
 q_list1->head = NULL;
 yyparse();  
-// print(list2->head);
+print(list2->head);
 // fclose(syntree);
 
 if(errors>0){
