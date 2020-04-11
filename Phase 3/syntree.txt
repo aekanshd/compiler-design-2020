@@ -1,0 +1,54 @@
+ line:22 node: fun_declaration element: main dataType: INT
+
+   line:19 node: block_item_list   
+     line:13 node: block_item_list     
+       line:12 node: block_item_list       
+         line:11 node: block_item_list         
+           line:10 node: block_item_list           
+             line:8 node: block_item_list             
+               line:7 node: block_item_list               
+                 line:5 node: block_item_list                 
+                   line:4 node: var_declaration dataType: INT
+                  
+                     line:4 node: init_declarator_list element: a                     
+                       line:4 node: factor value: 10                       
+                                        
+                                    
+                   line:5 node: var_declaration dataType: INT
+                  
+                     line:5 node: init_declarator_list element: b                     
+                       line:5 node: factor value: 40                       
+                                        
+                                    
+                                
+                 line:7 node: var_declaration dataType: float
+                
+                   line:7 node: init_declarator_list element: d                   
+                                
+                            
+               line:8 node: var_declaration dataType: char
+              
+                 line:8 node: init_declarator_list element: x                 
+                            
+                        
+             line:10 node: var_declaration dataType: INT
+            
+               line:10 node: init_declarator_list element: p               
+                 line:10 node: factor value: 4                 
+                            
+                        
+                    
+           line:11 node: postfix_expression element: p dataType: --
+          
+                
+         line:12 node: unary_expression element: p dataType: ++
+        
+            
+       line:13 node: unary_expression element: p dataType: --
+      
+        
+     line:19 node: assignment_expression element: a     
+       line:19 node: factor element: p       
+        
+    
+

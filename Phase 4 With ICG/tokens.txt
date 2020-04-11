@@ -118,4 +118,20 @@
   <token line="31" type="ASSIGN" string="=" />
   <token line="31" type="ID" string="p" />
   <token line="31" type="SEMI" string=";" />
+  <token line="32" type="INT" string="int" />
+  <token line="32" type="ID" string="k" />
+  <token line="32" type="ASSIGN" string="=" />
+  <token line="32" type="NUMBER" string="0" />
+  <token line="32" type="SEMI" string=";" />
+  <token line="33" type="WHILE" string="while" />
+  <token line="33" type="LPAREN" string="(" />
+  <token line="33" type="ID" string="k" />
+  <token line="33" type="LT" string="<" />
+  <token line="33" type="NUMBER" string="5" />
+  <token line="33" type="RPAREN" string=")" />
+  <token line="33" type="LBRACE" string="{" />
+  <token line="34" type="ID" string="k" />
+  <token line="34" type="INC_OP" string="++" />
+  <token line="34" type="SEMI" string=";" />
   <token line="35" type="RBRACE" string="}" />
+  <token line="36" type="RBRACE" string="}" />

@@ -29,7 +29,8 @@ int main()
 	int =5;
 	int int;
 	a=p;
-	//c = a+b*l;
-	//cin>>a;
-	//printf("Hello World!\n");
+	int k=0;
+	while (k<5){
+		k++;
+	}
 	}
