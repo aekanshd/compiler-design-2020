@@ -35,9 +35,9 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Quadruple format (Done) 
     - Insert Temporaries to Symbol Table (Done)
 ##  5. Phase 5 Intermediate Code Optimization
-    - Eliminate dead code (Pending)
-    - Subexpression elimination (Pending)
-    - Constant Folding, Propagation (Pending)
+    - Eliminate dead code (Done)
+    - Subexpression elimination (Done)
+    - Constant Folding, Propagation (Done)
     - Loop Invariant code outside loop (Pending)
     - live Variable Analysis (Pending)
  ## 6. Phase 6 Target Code Generation
