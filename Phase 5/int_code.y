@@ -8,7 +8,7 @@
 #include "lex.yy.c"
 //typedef char* string;
 //#define YYSTYPE string
-
+FILE *symtab;
 #define STR(VAR) (#VAR)
 #define release 1
 #define MAXCHILD 10
@@ -33,6 +33,8 @@ char* assign = "=";
 int expval=0;
 int errors = 0;
 /*Stack*/
+
+FILE *icgout;
 
 
 
@@ -107,7 +109,9 @@ char* get_three_add(quadruple* record) {
 void display_three_add(quad_list *list) {
     quadruple *traverse = list->head;
     while(traverse!=NULL) {
-        printf("%s\n",get_three_add(traverse));
+    	printf("%s\n", get_three_add(traverse));
+        fprintf(icgout, "%s\n",get_three_add(traverse));
+
         traverse=traverse->next;
     }
 }
@@ -252,14 +256,20 @@ void print(node *head){
     // printf("1\n");
     node *temp = head;
     printf("__________________________________________________________________\n");
+    fprintf(symtab, "__________________________________________________________________\n");
     printf("|Line      |Name      |Scope     |value     |id_type   |datatype  |\n");
+    fprintf(symtab, "|Line      |Name      |Scope     |value     |id_type   |datatype  |\n");
     printf("------------------------------------------------------------------\n");
+    fprintf(symtab, "------------------------------------------------------------------\n");
     while(temp!=NULL){
 
-        printf("|%-10d|%-10s|%-10d|%-10s|%-10s|%-10s|\n", temp->nl, temp->name, temp->scope, temp->rhs, temp->type, temp->dtype);    	
+        printf("|%-10d|%-10s|%-10d|%-10s|%-10s|%-10s|\n", temp->nl, temp->name, temp->scope, temp->rhs, temp->type, temp->dtype);
+        fprintf(symtab, "|%-10d|%-10s|%-10d|%-10s|%-10s|%-10s|\n", temp->nl, temp->name, temp->scope, temp->rhs, temp->type, temp->dtype);      	
         temp=temp->next;
     }
+
     printf("------------------------------------------------------------------\n");
+    fprintf(symtab, "------------------------------------------------------------------\n");
 }
 
 struct expression_details{
@@ -496,6 +506,7 @@ if_stmt
     } statement {
         quadruple* new_record = create_quadruple("label","","","",$<str>5, yylineno);
         insert_quadruple(q_list1,new_record);
+        
     } else_stmt {}
     ;
 else_stmt : 
@@ -946,6 +957,8 @@ char** argv;
 {
 //syntree = fopen("syntree.txt", "w");
 FILE *fp = fopen("tokens.txt", "w");
+icgout = fopen("icg.txt", "w");
+symtab = fopen("symtab.txt", "w");
 fclose(fp);
 if (argc > 1)
 {
@@ -977,7 +990,8 @@ if(errors>0){
 } else {
     //display_three_add(q_list1);
 }
-
+fclose(icgout);
+fclose(symtab);
 return 0; 
 } 
 

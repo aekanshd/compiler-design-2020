@@ -11,7 +11,7 @@ TE  [a-zA-Z_0-9!@#$%^&* \t\v\n\f]
 #include <stdlib.h> 
 #include <string.h>
 #include <limits.h> 
-#include "int_code2.tab.h"   
+#include "int_code.tab.h"   
 int yywrap(); 
 int scope = 0;
 void printToken(char* type){
@@ -23,13 +23,12 @@ fprintf(fp,"  <token line=\"%d\" type=\"%s\" string=\"%s\" />\n",
     fclose(fp);
 }
 
+static void comment(void);
 struct Stack {
 	int top;
 	unsigned capacity;
 	int* data;
 };
-
-struct Stack* stack;
 
 struct Stack* createStack(unsigned capacity)
 {
@@ -54,7 +53,7 @@ void push(struct Stack* stack, int item)
 {
     if(stack == NULL) {
         stack = createStack(100);
-        stack->data[++stack->top] = 0;
+        push(stack, 0);
     }
 	if (isFull(stack))
 		return;
@@ -65,7 +64,7 @@ int pop(struct Stack* stack)
 {
     if(stack == NULL) {
         stack = createStack(100);
-        stack->data[++stack->top] = 0;
+        push(stack, 0);
     }
 	if (isEmpty(stack))
 		return -32767;
@@ -83,7 +82,8 @@ int peek(struct Stack* stack)
 	return stack->data[stack->top];
 }
 
-static void comment(void);
+struct Stack* stack;
+
 %}
 %%
 

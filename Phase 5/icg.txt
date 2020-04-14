@@ -1,0 +1,37 @@
+q =  0
+a =  10
+t0 = a + 5
+b =  t0
+t1 = a + b
+c =  t1
+if  c<10  goto L0
+goto L1
+L0 : 
+a =  50
+L1 : 
+t2 = 4 + 10
+b =  t2
+t3 = b + 34
+a =  t3
+if  c<10  goto L2
+goto L3
+L2 : 
+L3 : 
+t4 = 4 + c
+c =  t4
+p =  9.7
+p =  200
+if  p<5  goto L4
+goto L5
+L4 : 
+a =  10
+L5 : 
+i =  0
+L6 : 
+if  i<10  goto L7
+goto L8
+L7 : 
+i = i + 1
+goto L6
+L8 : 
+a =  p
