@@ -278,9 +278,6 @@ struct expression_details{
 };
 typedef struct expression_details exp_det;
 exp_det det1;
-
-
-
 %}
 %code requires {
 
@@ -878,10 +875,9 @@ additive_expression
 
 term
     : factor {
-
               $$ = $1;
             }
-    | term STAR factor {
+    | term STAR term {
     	quadruple* new_record;
         
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10];
@@ -896,7 +892,7 @@ term
     	insert(list2, yylineno, temp,"TEMP", scope, $1, "TEMP");
     	$$ = temp;
 		}
-    | term SLASH factor {
+    | term SLASH term {
     	quadruple* new_record;
         
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10];
@@ -916,7 +912,6 @@ term
 factor
     : LPAREN expression RPAREN {$$=$2; }
     | ID {
-
           id_ex = find(list2, $1, scope);
           if(id_ex == NULL){
             printf("Error on %d, Assignment RHS not declared\n", yylineno);
@@ -924,8 +919,6 @@ factor
             $$ = "$";}
           else{
           	$$ = $1;
-            
-            
           }}
     | call {$$=$1;}
     | NUM { 

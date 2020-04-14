@@ -1,3 +1,9 @@
+  <token line="1" type="UNKNOWN LEXEME" string="#" />
+  <token line="1" type="#" string="#" />
+  <token line="1" type="ID" string="include" />
+  <token line="1" type="LT" string="<" />
+  <token line="1" type="ID" string="iostream" />
+  <token line="1" type="GT" string=">" />
   <token line="5" type="INT" string="int" />
   <token line="5" type="ID" string="q" />
   <token line="5" type="ASSIGN" string="=" />
@@ -65,6 +71,34 @@
   <token line="19" type="PLUS" string="+" />
   <token line="19" type="ID" string="c" />
   <token line="19" type="SEMI" string=";" />
+  <token line="20" type="ID" string="c" />
+  <token line="20" type="ASSIGN" string="=" />
+  <token line="20" type="NUMBER" string="3" />
+  <token line="20" type="PLUS" string="+" />
+  <token line="20" type="NUMBER" string="4" />
+  <token line="20" type="STAR" string="*" />
+  <token line="20" type="LPAREN" string="(" />
+  <token line="20" type="NUMBER" string="5" />
+  <token line="20" type="SLASH" string="/" />
+  <token line="20" type="LPAREN" string="(" />
+  <token line="20" type="NUMBER" string="8" />
+  <token line="20" type="SLASH" string="/" />
+  <token line="20" type="NUMBER" string="3" />
+  <token line="20" type="RPAREN" string=")" />
+  <token line="20" type="PLUS" string="+" />
+  <token line="20" type="NUMBER" string="6" />
+  <token line="20" type="MINUS" string="-" />
+  <token line="20" type="NUMBER" string="4" />
+  <token line="20" type="RPAREN" string=")" />
+  <token line="20" type="SLASH" string="/" />
+  <token line="20" type="LPAREN" string="(" />
+  <token line="20" type="NUMBER" string="32" />
+  <token line="20" type="RPAREN" string=")" />
+  <token line="20" type="MINUS" string="-" />
+  <token line="20" type="NUMBER" string="7" />
+  <token line="20" type="SLASH" string="/" />
+  <token line="20" type="NUMBER" string="8" />
+  <token line="20" type="SEMI" string=";" />
   <token line="21" type="FLOAT" string="float" />
   <token line="21" type="ID" string="p" />
   <token line="21" type="ASSIGN" string="=" />

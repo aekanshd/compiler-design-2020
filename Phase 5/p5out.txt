@@ -1,0 +1,31 @@
+a = 10
+b = 15
+c = 25
+IF c<10 GOTO L0
+GOTO L1
+L0 :
+a = 50
+L1 :
+b = 14
+a = 48
+IF c<10 GOTO L2
+GOTO L3
+L2 :
+L3 :
+c = 29
+p = 9.7
+p = 200
+IF p<5 GOTO L4
+GOTO L5
+L4 :
+a = 10
+L5 :
+i = 0
+L6 :
+IF i<10 GOTO L7
+GOTO L8
+L7 :
+i = i + 1
+GOTO L6
+L8 :
+a = 200

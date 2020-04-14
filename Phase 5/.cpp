@@ -1,4 +1,4 @@
-//#include <iostream>
+#include<iostream>
 
 //int p = 0;
 
@@ -17,7 +17,7 @@ int main()
 	
 	if(c<10){}
 	c = 4+c;
-	//c = 5+9*7;
+	c = 3 + 4 * (5/ (8/3) + 6 - 4)/ (32) - 7/8;
 	float p = 9.7;
 	//p--;
 	//++p;
