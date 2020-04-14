@@ -14,8 +14,10 @@ int main()
 	b = 4+ 10;
 	a = b + 34;
 	
-	
+	z =9;
 	if(c<10){}
+	else{
+	}
 	c = 4+c;
 	//c = 5+9*7;
 	float p = 9.7;
@@ -25,12 +27,8 @@ int main()
 	int p=200;
 	if(p<5) a=10;
 	cout<<"Hi"<<endl;
-	for(int i=0;i<10;i++){}
+	for(int i=0;i<10;i++){ cout << i;}
 	int =5;
 	int int;
-	a=p;
-	int k=0;
-	while (k<5){
-		k++;
-	}
+	
 	}
