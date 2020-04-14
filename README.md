@@ -14,7 +14,7 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Symbol Table (Done)
 ##  2. Phase 2 Syntax Analysis<br>
     - Abstract Syntax Tree Construction (Done)
-    - Global & Local Variables Distinction (Partially Done)
+    - Global & Local Variables Distinction (Done)
     - Class Definition (Done)
     - Arrays/Pointers definition (Done)
     - Arithmetic and Boolean Expressions (Done)
@@ -33,7 +33,7 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Local variables should be destroyed after exiting block (Pending) - Varun
     - break statements, access control (Pending)
     - Modify Symbol Table based on Scope (Pending)
-    - Evaluate Complex Expressions with Parenthesis (Pending)
+    - Evaluate Complex Expressions with Parenthesis (Done)
  ## 4. Phase 4 Intermediate Code Generation
     - Generate three address code (Done)
     - Quadruple format (Done) 
@@ -43,7 +43,7 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Subexpression elimination (Done)
     - Constant Folding, Propagation (Done)
     - Loop Invariant code outside loop (Done)
-    - live Variable Analysis (Pending)
+    - live Variable Analysis (Done)
  ## 6. Phase 6 Target Code Generation
     - Assembly Code (Done)
     

@@ -1,28 +1,36 @@
+import time
 def printl(list1):
     for i in list1:
         print(i)
+        time.sleep(0.03)
         
 def printExpression(constantList, filepointer):
     for i in constantList:
         if(i[0]=="="):
             print(i[3],i[0],i[1])
+            time.sleep(0.03)
             filepointer.write("%s %s %s\n"%(i[3],i[0],i[1]))
         elif(i[0] in ["+","-","*","/","==","<=","<",">",">="]):
             print(i[3],"=",i[1],i[0],i[2])
+            time.sleep(0.03)
             filepointer.write("%s %s %s %s %s\n"%(i[3],"=",i[1],i[0],i[2]))
         elif(i[0] in ["IF","GOTO","LABEL","not"]):
             
             if(i[0]=="IF"):
                 print(i[0],i[1],"GOTO",i[3])
+                time.sleep(0.03)
                 filepointer.write("%s %s %s %s\n" %(i[0],i[1],"GOTO",i[3]))
             if(i[0]=="GOTO"):
                 print(i[0],i[1])
+                time.sleep(0.03)
                 filepointer.write("%s %s\n"%(i[0],i[1]))
             if(i[0]=="LABEL"):
                 filepointer.write("%s %s\n"%(i[1], ":"))
                 print(i[1],":")
+                time.sleep(0.03)
             if(i[0]=="not"):
                 print(i[3],"=",i[0],i[1])
+                time.sleep(0.03)
                 filepointer.write("%s %s %s %s\n"%(i[3],"=",i[0],i[1]))
 def existslabel(lines, i):
     if(i == 0):
@@ -38,6 +46,37 @@ def exists_lhs(lines, variable, start, end):
         if(lines[i].split()[0] == variable):
             return 1
     return 0
+def exists_rhs(lines, lhs, start):
+    for i in range(len(lines)-1, start-1, -1):
+        if(len(lines[i].split()) == 5):
+            rhs1 = lines[i].split()[2]
+            rhs2 = lines[i].split()[4]
+            if(rhs1 == lhs or rhs2 == lhs):              
+                return i
+        elif(len(lines[i].split()) == 3):
+            rhs = lines[i].split()[2]
+            if(rhs == lhs):
+                return i
+        elif(len(lines[i].split()) == 4):
+            rhs = lines[i].split()[1]
+            l1 = ""
+            l2 = ""
+            fl = 0
+            for x in rhs:
+                if x in [">", "<", "=", "!"]:
+                    fl = 1
+                    continue
+                if (x == "="):
+                    continue
+                if(fl == 0):
+                    l1 = l1 + x
+                if(fl == 1):
+                    l2 = l2 + x
+            if(l1 == lhs or l2 == lhs):
+                return i
+    return -1
+        
+        
 def findLoopLines(lines):
     gotoindex = dict()
     loopblock = []
@@ -52,6 +91,7 @@ def findLoopLines(lines):
         if(gotoindex[key]>labelindex[key]):
             loopblock.append([labelindex[key], gotoindex[key]])
     return loopblock
+
 def loopMotion(lines):
     for i in range(len(lines)):
         lines[i] = lines[i].strip("\n")
@@ -140,13 +180,18 @@ def elimDeadCode(lines):
                     l1 = ""
                     l2 = ""
                     fl = 0
+                    
                     for x in rhs:
-                        if x in [">", "<", ">=", "<=", "==", "!="]:
+                        if x in [">", "<", "=", "!"]:
                             fl = 1
+                            continue
+                        if (x == "="):
+                            continue
                         if(fl == 0):
                             l1 = l1 + x
                         if(fl == 1):
                             l2 = l2 + x
+                    
                     if(l1 == lhs or l2 == lhs):
                         flag = 1
                         outflag = 1
@@ -171,8 +216,12 @@ def constantFolding(lines, blocks):
     tempdict = dict()
     constantList = []
     fullList = []
+    print()
+    print("___________________________")
+    print()
     print("Constant Folding Quadruples")
     print("___________________________")
+    print()
     k = 0
     for i in lines:
         
@@ -180,26 +229,31 @@ def constantFolding(lines, blocks):
         if k in blocks:
             if(len(i.split()) == 3):
                 print("=", rhs, "NULL", lhs)
+                time.sleep(0.03)
                 lhs, ass, rhs = i.split()
                 constantList.append(["=", rhs, "NULL", lhs])
                 fullList.append(["=", rhs, "NULL", lhs])
             elif(len(i.split()) == 5):
                 print(operator,arg1,arg2,lhs)
+                time.sleep(0.03)
                 lhs, ass, arg1, operator, arg2 = i.split()
                 constantList.append([operator, arg1, arg2, lhs])
             elif(len(i.split()) == 2):
                 arg1, arg2 = i.split()
                 if(arg1 == "goto"):
                     print("GOTO", arg2)
+                    time.sleep(0.03)
                     constantList.append(["GOTO", arg2, "NULL", "NULL"])
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
                 else:
                     print("LABEL", arg1)
+                    time.sleep(0.03)
                     constantList.append(["LABEL", arg1, "NULL", "NULL"])
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
             else:
                 cond, arg1, gt, label = i.split();
                 print("IF", arg1, "GOTO", label)
+                time.sleep(0.03)
                 constantList.append(["IF", arg1, "GOTO", label])
                 fullList.append(["IF", arg1, "GOTO", label])
                 
@@ -209,16 +263,19 @@ def constantFolding(lines, blocks):
                 if(rhs.isdigit()):
                     tempdict[lhs] = rhs;
                     print("=", rhs, "NULL", lhs);
+                    time.sleep(0.03)
                     constantList.append(["=", rhs, "NULL", lhs])
                     fullList.append(["=", rhs, "NULL", lhs])
                 else:
                     if(rhs in tempdict):
                         tempdict[lhs] = tempdict[rhs]
                         print("=", tempdict[rhs], "NULL", lhs)
+                        time.sleep(0.03)
                         constantList.append(["=", tempdict[rhs], "NULL", lhs])
                         fullList.append(["=", tempdict[rhs], "NULL", lhs])
                     else:
                         print("=", rhs, "NULL", lhs)
+                        time.sleep(0.03)
                         constantList.append(["=", rhs, "NULL", lhs])
                         fullList.append(["=", rhs, "NULL", lhs])
                     
@@ -230,6 +287,7 @@ def constantFolding(lines, blocks):
                         result = eval(arg1+operator+arg2)
                         tempdict[lhs] = result
                         print("=", result, "NULL", lhs)
+                        time.sleep(0.03);
                         constantList.append(["=", result, "NULL", lhs])
                         fullList.append(["=", result, "NULL", lhs])
                     elif(arg1.isdigit()):
@@ -237,10 +295,12 @@ def constantFolding(lines, blocks):
                             result = eval(arg1+operator+str(tempdict[arg2]))
                             tempdict[lhs] = result
                             print("=", result, "NULL", lhs)
+                            time.sleep(0.03)
                             constantList.append(["=", result, "NULL", lhs])
                             fullList.append(["=", result, "NULL", lhs])
                         else:
                             print(operator, arg1, arg2, lhs)
+                            time.sleep(0.03)
                             constantList.append([operator, arg1, arg2, lhs])
                             fullList.append([operator, arg1, arg2, lhs])
                     elif(arg2.isdigit()):
@@ -250,10 +310,12 @@ def constantFolding(lines, blocks):
                             result = eval(str(tempdict[arg1])+operator+arg2)
                             tempdict[lhs] = result
                             print("=",result,"NULL",lhs)
+                            time.sleep(0.03)
                             constantList.append(["=",result,"NULL",lhs])
                             fullList.append(["=",result,"NULL",lhs])
                         else:
                             print(operator,arg1,arg2,lhs)
+                            time.sleep(0.03)
                             constantList.append([operator,arg1,arg2,lhs])
                             fullList.append([operator,arg1,arg2,lhs])
                     else:
@@ -270,11 +332,13 @@ def constantFolding(lines, blocks):
                         if(flag1==1 and flag2==1):
                             result = eval(arg1Res+operator+arg2Res)
                             tempdict[lhs] = result
-                            print("=",result,"NULL",lhs) 
+                            print("=",result,"NULL",lhs)
+                            time.sleep(0.03)
                             constantList.append(["=",result,"NULL",lhs])
                             fullList.append(["=",result,"NULL",lhs])
                         else:
                             print(operator,arg1Res,arg2Res,lhs)
+                            time.sleep(0.03)
                             constantList.append([operator,arg1Res,arg2Res,lhs])
                             fullList.append([operator,arg1Res,arg2Res,lhs])
             
@@ -282,36 +346,43 @@ def constantFolding(lines, blocks):
                     if(arg1.isdigit()):
                         tempdict[lhs]=arg1
                         print("=",arg1,"NULL",lhs)
+                        time.sleep(0.03)
                         constantList.append(["=",arg1,"NULL",lhs])
                         fullList.append(["=",arg1,"NULL",lhs])
                     else:
                         if(arg1 in tempdict):
                             print("=",tempdict[arg1],"NULL",lhs)
+                            time.sleep(0.03)
                             constantList.append(["=",tempdict[arg1],"NULL",lhs])
                             fullList.append(["=",tempdict[arg1],"NULL",lhs])
                         else:
                             print("=",arg1,"NULL",lhs)
+                            time.sleep(0.03)
                             constantList.append(["=",arg1,"NULL",lhs])
                             fullList.append(["=",arg1,"NULL",lhs])
     
                 else:
                     print(operator,arg1,arg2,lhs)
+                    time.sleep(0.03)
                     constantList.append([operator,arg1,arg2,lhs])
                     fullList.append([operator,arg1,arg2,lhs])
             elif(len(i.split()) == 2):
                 arg1, arg2 = i.split()
                 if(arg1 == 'goto'):
                     print("GOTO", arg2)
+                    time.sleep(0.03)
                     constantList.append(["GOTO", arg2, "NULL", "NULL"])
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
                 else:
                     print("LABEL", arg1)
+                    time.sleep(0.03)
                     constantList.append(["LABEL", arg1, "NULL", "NULL"])
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
                 
             else:
                 cond, arg1, gt, label = i.split();
                 print("IF", arg1, "GOTO", label)
+                time.sleep(0.03)
                 constantList.append(["IF", arg1, "GOTO", label])
                 fullList.append(["IF", arg1, "GOTO", label])
         k+=1
@@ -326,16 +397,48 @@ def constantFolding(lines, blocks):
 
 
 
-
+def liveVarAnalysis(lines):
+    k = 1
+    livevariables = []
+    varloc = dict()
+    for i in lines:
+        i = i.strip("\n")
+        if(len(i.split()) == 5 or len(i.split()) == 3):
+            lhs = i.split()[0]
+            out = exists_rhs(lines, lhs, k-1)
+            if(out != -1):
+                if(lhs not in livevariables):
+                    livevariables.append(lhs)
+                    varloc[out] = lhs
+            if((k-1) in varloc.keys()):
+                
+                livevariables.remove(varloc[k-1])
+            
+        print("Live Variables at Line ", k, " Are : ", livevariables)
+        time.sleep(0.02)
+        k = k + 1
+    time.sleep(0.5)
+    print("__________________________")
+    print()
 
 fin = open("icg.txt", "r")
 fout = open("p5out.txt", "w")
 lines = fin.readlines()
+print()
+print("______________________")
+print()
+print("Live Variable Analysis")
+print("______________________")
+liveVarAnalysis(lines)
 print("Loop Invariant Code Motion")
 print("__________________________")
-lines, loopblock = loopMotion(lines)        
+print()
+lines, loopblock = loopMotion(lines)
+print("_____________________")
+print()
 print("Dead Code Elimination")
 print("_____________________")
+print()
 lines = elimDeadCode(lines)
 printl(lines)
 looplines = findLoopLines(lines)
@@ -346,8 +449,11 @@ for i in range(len(looplines)):
 
 constantList, fullList = constantFolding(lines, loop)
 print("\n")
+print("__________________________")
+print()
 print("Constant Folded Expression")
 print("__________________________")
+print()
 printExpression(constantList, fout)
 fin.close()
 fout.close()

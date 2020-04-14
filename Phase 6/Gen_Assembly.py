@@ -1,4 +1,3 @@
-#NOT HANDLED GT LT
 import time
 def findoperation(stmt, op, label):
     if(op == ">"):
@@ -152,16 +151,21 @@ def genAssembly(lines, file):
             flag = 0
             lhs = ""
             rhs = ""
-            operator = [">", "<", ">=", "<=", "==", "!="]
+            operator = [">", "<", ">=", "<=", "=", "!"]
+            op = ""
             for j in condition:
                 if(j in operator):
-                    op = j
+                    op = op + j
                     flag = 1
+                    continue
+                if(j == "="):
+                    op = op + j
                     continue
                 if(flag == 0):
                     lhs += j
                 else:
                     rhs+=j
+            
             if(rhs.isdigit() and lhs.isdigit()):
                 stmt, regval, r1 = loadconstant(stmt, regval, lhs)
                 stmt, regval, r2 = loadconstant(stmt, regval, rhs)
@@ -225,8 +229,7 @@ def genAssembly(lines, file):
 def writeassembly(stmt, vardec, File):
     File.write(".text\n")
     for i in stmt:
-        
-        time.sleep(0.01)
+        time.sleep(0.001)
         File.write("%s\n"%(i))
     File.write("SWI 0x011\n")
     File.write(".DATA\n")
