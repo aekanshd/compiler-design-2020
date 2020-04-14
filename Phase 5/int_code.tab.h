@@ -98,8 +98,9 @@
      CIN = 303,
      COUT = 304,
      CLASS = 305,
-     THEN = 306,
-     LOWER_THAN_ELSE = 307
+     PREPROC = 306,
+     THEN = 307,
+     LOWER_THAN_ELSE = 308
    };
 #endif
 
@@ -120,7 +121,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 124 "int_code.tab.h"
+#line 125 "int_code.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

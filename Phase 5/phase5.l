@@ -103,6 +103,7 @@ struct Stack* stack;
 "char"                  {printToken("CHAR"); yylval.str=strdup(yytext); return(CHAR);}
 "for"                   {printToken("FOR"); return FOR;}
 "class"                 {printToken("CLASS"); return CLASS;}
+"#include"				{printToken("PREPROCESSOR_DIRECTIVE"); return PREPROC;}
 "++"                {printToken("INC_OP");return INC_OP;} 
 "--"                {printToken("DEC_OP");return DEC_OP;} 
 "+"             {printToken("PLUS");return PLUS;}     

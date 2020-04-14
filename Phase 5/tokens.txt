@@ -1,155 +1,157 @@
-  <token line="1" type="UNKNOWN LEXEME" string="#" />
-  <token line="1" type="#" string="#" />
-  <token line="1" type="ID" string="include" />
+  <token line="1" type="PREPROCESSOR_DIRECTIVE" string="#include" />
   <token line="1" type="LT" string="<" />
   <token line="1" type="ID" string="iostream" />
   <token line="1" type="GT" string=">" />
-  <token line="5" type="INT" string="int" />
-  <token line="5" type="ID" string="q" />
-  <token line="5" type="ASSIGN" string="=" />
-  <token line="5" type="NUMBER" string="0" />
-  <token line="5" type="SEMI" string=";" />
+  <token line="2" type="PREPROCESSOR_DIRECTIVE" string="#include" />
+  <token line="2" type="LT" string="<" />
+  <token line="2" type="ID" string="algorithm" />
+  <token line="2" type="GT" string=">" />
   <token line="6" type="INT" string="int" />
-  <token line="6" type="ID" string="main" />
-  <token line="6" type="LPAREN" string="(" />
-  <token line="6" type="RPAREN" string=")" />
-  <token line="7" type="LBRACE" string="{" />
-  <token line="9" type="INT" string="int" />
-  <token line="9" type="ID" string="a" />
-  <token line="9" type="ASSIGN" string="=" />
-  <token line="9" type="NUMBER" string="10" />
-  <token line="9" type="SEMI" string=";" />
+  <token line="6" type="ID" string="q" />
+  <token line="6" type="ASSIGN" string="=" />
+  <token line="6" type="NUMBER" string="0" />
+  <token line="6" type="SEMI" string=";" />
+  <token line="7" type="INT" string="int" />
+  <token line="7" type="ID" string="main" />
+  <token line="7" type="LPAREN" string="(" />
+  <token line="7" type="RPAREN" string=")" />
+  <token line="8" type="LBRACE" string="{" />
   <token line="10" type="INT" string="int" />
-  <token line="10" type="ID" string="b" />
-  <token line="10" type="ASSIGN" string="=" />
   <token line="10" type="ID" string="a" />
-  <token line="10" type="PLUS" string="+" />
-  <token line="10" type="NUMBER" string="5" />
+  <token line="10" type="ASSIGN" string="=" />
+  <token line="10" type="NUMBER" string="10" />
   <token line="10" type="SEMI" string=";" />
   <token line="11" type="INT" string="int" />
-  <token line="11" type="ID" string="c" />
+  <token line="11" type="ID" string="b" />
   <token line="11" type="ASSIGN" string="=" />
   <token line="11" type="ID" string="a" />
   <token line="11" type="PLUS" string="+" />
-  <token line="11" type="ID" string="b" />
+  <token line="11" type="NUMBER" string="5" />
   <token line="11" type="SEMI" string=";" />
-  <token line="12" type="IF" string="if" />
-  <token line="12" type="LPAREN" string="(" />
+  <token line="12" type="INT" string="int" />
   <token line="12" type="ID" string="c" />
-  <token line="12" type="LT" string="<" />
-  <token line="12" type="NUMBER" string="10" />
-  <token line="12" type="RPAREN" string=")" />
-  <token line="12" type="LBRACE" string="{" />
-  <token line="12" type="ID" string="a" />
   <token line="12" type="ASSIGN" string="=" />
-  <token line="12" type="NUMBER" string="50" />
+  <token line="12" type="ID" string="a" />
+  <token line="12" type="PLUS" string="+" />
+  <token line="12" type="ID" string="b" />
   <token line="12" type="SEMI" string=";" />
-  <token line="12" type="RBRACE" string="}" />
-  <token line="14" type="ID" string="b" />
-  <token line="14" type="ASSIGN" string="=" />
-  <token line="14" type="NUMBER" string="4" />
-  <token line="14" type="PLUS" string="+" />
-  <token line="14" type="NUMBER" string="10" />
-  <token line="14" type="SEMI" string=";" />
-  <token line="15" type="ID" string="a" />
-  <token line="15" type="ASSIGN" string="=" />
+  <token line="13" type="IF" string="if" />
+  <token line="13" type="LPAREN" string="(" />
+  <token line="13" type="ID" string="c" />
+  <token line="13" type="LT" string="<" />
+  <token line="13" type="NUMBER" string="10" />
+  <token line="13" type="RPAREN" string=")" />
+  <token line="13" type="LBRACE" string="{" />
+  <token line="13" type="ID" string="a" />
+  <token line="13" type="ASSIGN" string="=" />
+  <token line="13" type="NUMBER" string="50" />
+  <token line="13" type="SEMI" string=";" />
+  <token line="13" type="RBRACE" string="}" />
   <token line="15" type="ID" string="b" />
+  <token line="15" type="ASSIGN" string="=" />
+  <token line="15" type="NUMBER" string="4" />
   <token line="15" type="PLUS" string="+" />
-  <token line="15" type="NUMBER" string="34" />
+  <token line="15" type="NUMBER" string="10" />
   <token line="15" type="SEMI" string=";" />
-  <token line="18" type="IF" string="if" />
-  <token line="18" type="LPAREN" string="(" />
-  <token line="18" type="ID" string="c" />
-  <token line="18" type="LT" string="<" />
-  <token line="18" type="NUMBER" string="10" />
-  <token line="18" type="RPAREN" string=")" />
-  <token line="18" type="LBRACE" string="{" />
-  <token line="18" type="RBRACE" string="}" />
+  <token line="16" type="ID" string="a" />
+  <token line="16" type="ASSIGN" string="=" />
+  <token line="16" type="ID" string="b" />
+  <token line="16" type="PLUS" string="+" />
+  <token line="16" type="NUMBER" string="34" />
+  <token line="16" type="SEMI" string=";" />
+  <token line="19" type="IF" string="if" />
+  <token line="19" type="LPAREN" string="(" />
   <token line="19" type="ID" string="c" />
-  <token line="19" type="ASSIGN" string="=" />
-  <token line="19" type="NUMBER" string="4" />
-  <token line="19" type="PLUS" string="+" />
-  <token line="19" type="ID" string="c" />
-  <token line="19" type="SEMI" string=";" />
+  <token line="19" type="LT" string="<" />
+  <token line="19" type="NUMBER" string="10" />
+  <token line="19" type="RPAREN" string=")" />
+  <token line="19" type="LBRACE" string="{" />
+  <token line="19" type="RBRACE" string="}" />
   <token line="20" type="ID" string="c" />
   <token line="20" type="ASSIGN" string="=" />
-  <token line="20" type="NUMBER" string="3" />
-  <token line="20" type="PLUS" string="+" />
   <token line="20" type="NUMBER" string="4" />
-  <token line="20" type="STAR" string="*" />
-  <token line="20" type="LPAREN" string="(" />
-  <token line="20" type="NUMBER" string="5" />
-  <token line="20" type="SLASH" string="/" />
-  <token line="20" type="LPAREN" string="(" />
-  <token line="20" type="NUMBER" string="8" />
-  <token line="20" type="SLASH" string="/" />
-  <token line="20" type="NUMBER" string="3" />
-  <token line="20" type="RPAREN" string=")" />
   <token line="20" type="PLUS" string="+" />
-  <token line="20" type="NUMBER" string="6" />
-  <token line="20" type="MINUS" string="-" />
-  <token line="20" type="NUMBER" string="4" />
-  <token line="20" type="RPAREN" string=")" />
-  <token line="20" type="SLASH" string="/" />
-  <token line="20" type="LPAREN" string="(" />
-  <token line="20" type="NUMBER" string="32" />
-  <token line="20" type="RPAREN" string=")" />
-  <token line="20" type="MINUS" string="-" />
-  <token line="20" type="NUMBER" string="7" />
-  <token line="20" type="SLASH" string="/" />
-  <token line="20" type="NUMBER" string="8" />
+  <token line="20" type="ID" string="c" />
   <token line="20" type="SEMI" string=";" />
-  <token line="21" type="FLOAT" string="float" />
-  <token line="21" type="ID" string="p" />
+  <token line="21" type="ID" string="c" />
   <token line="21" type="ASSIGN" string="=" />
-  <token line="21" type="FLOATINGPOINT" string="9.7" />
+  <token line="21" type="NUMBER" string="3" />
+  <token line="21" type="PLUS" string="+" />
+  <token line="21" type="NUMBER" string="4" />
+  <token line="21" type="STAR" string="*" />
+  <token line="21" type="LPAREN" string="(" />
+  <token line="21" type="NUMBER" string="5" />
+  <token line="21" type="SLASH" string="/" />
+  <token line="21" type="LPAREN" string="(" />
+  <token line="21" type="NUMBER" string="8" />
+  <token line="21" type="SLASH" string="/" />
+  <token line="21" type="NUMBER" string="3" />
+  <token line="21" type="RPAREN" string=")" />
+  <token line="21" type="PLUS" string="+" />
+  <token line="21" type="NUMBER" string="6" />
+  <token line="21" type="MINUS" string="-" />
+  <token line="21" type="NUMBER" string="4" />
+  <token line="21" type="RPAREN" string=")" />
+  <token line="21" type="SLASH" string="/" />
+  <token line="21" type="LPAREN" string="(" />
+  <token line="21" type="NUMBER" string="32" />
+  <token line="21" type="RPAREN" string=")" />
+  <token line="21" type="MINUS" string="-" />
+  <token line="21" type="NUMBER" string="7" />
+  <token line="21" type="SLASH" string="/" />
+  <token line="21" type="NUMBER" string="8" />
   <token line="21" type="SEMI" string=";" />
-  <token line="25" type="INT" string="int" />
-  <token line="25" type="ID" string="p" />
-  <token line="25" type="ASSIGN" string="=" />
-  <token line="25" type="NUMBER" string="200" />
-  <token line="25" type="SEMI" string=";" />
-  <token line="26" type="IF" string="if" />
-  <token line="26" type="LPAREN" string="(" />
+  <token line="22" type="FLOAT" string="float" />
+  <token line="22" type="ID" string="p" />
+  <token line="22" type="ASSIGN" string="=" />
+  <token line="22" type="FLOATINGPOINT" string="9.7" />
+  <token line="22" type="SEMI" string=";" />
+  <token line="26" type="INT" string="int" />
   <token line="26" type="ID" string="p" />
-  <token line="26" type="LT" string="<" />
-  <token line="26" type="NUMBER" string="5" />
-  <token line="26" type="RPAREN" string=")" />
-  <token line="26" type="ID" string="a" />
   <token line="26" type="ASSIGN" string="=" />
-  <token line="26" type="NUMBER" string="10" />
+  <token line="26" type="NUMBER" string="200" />
   <token line="26" type="SEMI" string=";" />
-  <token line="27" type="COUT" string="cout" />
-  <token line="27" type="INSERTION" string="<<" />
-  <token line="27" type="String" string=""Hi"" />
-  <token line="27" type="INSERTION" string="<<" />
-  <token line="27" type="ENDL" string="endl" />
+  <token line="27" type="IF" string="if" />
+  <token line="27" type="LPAREN" string="(" />
+  <token line="27" type="ID" string="p" />
+  <token line="27" type="LT" string="<" />
+  <token line="27" type="NUMBER" string="5" />
+  <token line="27" type="RPAREN" string=")" />
+  <token line="27" type="ID" string="a" />
+  <token line="27" type="ASSIGN" string="=" />
+  <token line="27" type="NUMBER" string="10" />
   <token line="27" type="SEMI" string=";" />
-  <token line="28" type="FOR" string="for" />
-  <token line="28" type="LPAREN" string="(" />
-  <token line="28" type="INT" string="int" />
-  <token line="28" type="ID" string="i" />
-  <token line="28" type="ASSIGN" string="=" />
-  <token line="28" type="NUMBER" string="0" />
+  <token line="28" type="COUT" string="cout" />
+  <token line="28" type="INSERTION" string="<<" />
+  <token line="28" type="String" string=""Hi"" />
+  <token line="28" type="INSERTION" string="<<" />
+  <token line="28" type="ENDL" string="endl" />
   <token line="28" type="SEMI" string=";" />
-  <token line="28" type="ID" string="i" />
-  <token line="28" type="LT" string="<" />
-  <token line="28" type="NUMBER" string="10" />
-  <token line="28" type="SEMI" string=";" />
-  <token line="28" type="ID" string="i" />
-  <token line="28" type="INC_OP" string="++" />
-  <token line="28" type="RPAREN" string=")" />
-  <token line="28" type="LBRACE" string="{" />
-  <token line="28" type="RBRACE" string="}" />
+  <token line="29" type="FOR" string="for" />
+  <token line="29" type="LPAREN" string="(" />
   <token line="29" type="INT" string="int" />
+  <token line="29" type="ID" string="i" />
   <token line="29" type="ASSIGN" string="=" />
-  <token line="29" type="NUMBER" string="5" />
+  <token line="29" type="NUMBER" string="0" />
   <token line="29" type="SEMI" string=";" />
+  <token line="29" type="ID" string="i" />
+  <token line="29" type="LT" string="<" />
+  <token line="29" type="NUMBER" string="10" />
+  <token line="29" type="SEMI" string=";" />
+  <token line="29" type="ID" string="i" />
+  <token line="29" type="INC_OP" string="++" />
+  <token line="29" type="RPAREN" string=")" />
+  <token line="29" type="LBRACE" string="{" />
+  <token line="29" type="RBRACE" string="}" />
   <token line="30" type="INT" string="int" />
-  <token line="30" type="INT" string="int" />
+  <token line="30" type="ASSIGN" string="=" />
+  <token line="30" type="NUMBER" string="5" />
   <token line="30" type="SEMI" string=";" />
-  <token line="31" type="ID" string="a" />
-  <token line="31" type="ASSIGN" string="=" />
-  <token line="31" type="ID" string="p" />
+  <token line="31" type="INT" string="int" />
+  <token line="31" type="INT" string="int" />
   <token line="31" type="SEMI" string=";" />
-  <token line="35" type="RBRACE" string="}" />
+  <token line="32" type="ID" string="a" />
+  <token line="32" type="ASSIGN" string="=" />
+  <token line="32" type="ID" string="p" />
+  <token line="32" type="SEMI" string=";" />
+  <token line="36" type="RBRACE" string="}" />

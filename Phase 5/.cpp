@@ -1,4 +1,5 @@
 #include<iostream>
+#include<algorithm>
 
 //int p = 0;
 

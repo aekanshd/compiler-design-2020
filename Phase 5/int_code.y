@@ -300,6 +300,7 @@ exp_det det1;
 %token INSERTION EXTRACTION
 %token CIN COUT
 %token CLASS
+%token PREPROC
 %left PLUS MINUS
 %left STAR SLASH
 
@@ -317,10 +318,12 @@ exp_det det1;
 atree:program {display_three_add(q_list1);}
 
 program 
-    : external_declaration {$$=$1; }
-    | program external_declaration { }
-    | class_declaration{}
-    | program class_declaration{}
+    : external_declaration {$$=$1;}
+    | program external_declaration {}
+    | program PREPROC LT ID GT {printf("%s\n", $4);}
+    | PREPROC LT ID GT {printf("%s\n", $3);}
+    | class_declaration {}
+    | program class_declaration {}
     ;
 
 external_declaration
@@ -912,6 +915,10 @@ term
 factor
     : LPAREN expression RPAREN {$$=$2; }
     | ID {
+    	  if(yylineno == 1){
+    	  	$$ = $1;
+    	  }	
+    	  else{
           id_ex = find(list2, $1, scope);
           if(id_ex == NULL){
             printf("Error on %d, Assignment RHS not declared\n", yylineno);
@@ -919,7 +926,9 @@ factor
             $$ = "$";}
           else{
           	$$ = $1;
-          }}
+            
+            
+          }}}
     | call {$$=$1;}
     | NUM { 
            $$ = yylval.str;
@@ -928,7 +937,7 @@ factor
     |FLT{
         $$ = yylval.str;
     	}
-    |STR {}
+    |STR {$$ = yylval.str;}
     ;
     
 call
