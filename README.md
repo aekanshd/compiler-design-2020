@@ -42,7 +42,7 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Eliminate dead code (Done)
     - Subexpression elimination (Done)
     - Constant Folding, Propagation (Done)
-    - Loop Invariant code outside loop (Pending)
+    - Loop Invariant code outside loop (Done)
     - live Variable Analysis (Pending)
  ## 6. Phase 6 Target Code Generation
     - Assembly Code (Pending)
