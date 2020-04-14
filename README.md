@@ -45,6 +45,6 @@ A repository for Mini Project of Compiler Design, 6th Sem, Computer Science, PES
     - Loop Invariant code outside loop (Done)
     - live Variable Analysis (Pending)
  ## 6. Phase 6 Target Code Generation
-    - Assembly Code (Pending)
+    - Assembly Code (Done)
     
     
