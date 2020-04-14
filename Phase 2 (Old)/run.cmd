@@ -1,0 +1,1 @@
+lex .L; yacc -d .Y; g++ -o .out y.tab.c -ll; ./.out < .cpp;
