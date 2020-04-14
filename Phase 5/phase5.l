@@ -125,7 +125,7 @@ struct Stack* stack;
 ("[")               {printToken("LSQUAR");return LSQUAR; }
 ("]")               {printToken("RSQUAR");return RSQUAR;}
 ("{")               {printToken("LBRACE"); scope++; push(stack, scope); return LBRACE;}
-("}")               {printToken("RBRACE"); pop(stack); return RBRACE;}
+("}")               {printToken("RBRACE"); pop(stack);scope--; return RBRACE;}
 ";"             {printToken("SEMI");return SEMI;}
 ","             {printToken("COMMA");return COMMA;}
 "("             {printToken("LPAREN");return LPAREN;}

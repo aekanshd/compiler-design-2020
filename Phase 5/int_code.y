@@ -272,6 +272,19 @@ void print(node *head){
     fprintf(symtab, "------------------------------------------------------------------\n");
 }
 
+void reset_scope(list1 *root, int current_scope) {
+    if(root == NULL || root->head == NULL){
+        return;
+    }
+    node *t2 = root->head;
+    while (t2!=NULL) {
+        if(t2->scope > current_scope) {
+            t2->scope=-1;
+        }
+        t2=t2->next;
+    }
+}
+
 struct expression_details{
     int value;
     char type[200];
@@ -331,7 +344,7 @@ external_declaration
     | fun_declaration {$$=$1;}
     ;
 class_declaration
-	: declaration_specifiers ID LBRACE external_declaration RBRACE SEMI {insert(list2, yylineno, $2, "class", peek(stack), " ", "class");}
+	: declaration_specifiers ID LBRACE external_declaration RBRACE SEMI {insert(list2, yylineno, $2, "class", scope, " ", "class");}
 var_declaration
     : declaration_specifiers init_declarator_list SEMI 
     {}
@@ -339,31 +352,31 @@ var_declaration
     | error SEMI{yyerrok;}
     ;
 array_dec
-	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, peek(stack), " ", "ARRAY");}
-	| STAR ID {insert(list2, yylineno, $2, type, peek(stack), " ", "PTR");}
+	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, scope, " ", "ARRAY");}
+	| STAR ID {insert(list2, yylineno, $2, type, scope, " ", "PTR");}
 
 init_declarator_list
-    : ID {insert(list2, yylineno, $1, type, peek(stack), " ", "IDENT");}
+    : ID {insert(list2, yylineno, $1, type, scope, " ", "IDENT");}
     | ID ASSIGN expression {
                             char arg1[10];
                             sprintf(arg1,"%s",$3);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$1, yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, $1, type, peek(stack), " ", "IDENT");
-                            update(list2, $1, peek(stack), $3);
+                            insert(list2, yylineno, $1, type, scope, " ", "IDENT");
+                            update(list2, $1, scope, $3);
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
                         }
-    | init_declarator_list COMMA ID { insert(list2, yylineno, $3, type, peek(stack), " ", "IDENT"); 
+    | init_declarator_list COMMA ID { insert(list2, yylineno, $3, type, scope, " ", "IDENT"); 
     }
     | init_declarator_list COMMA ID ASSIGN expression {
                             char arg1[10];
                             sprintf(arg1,"%s",$5);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$3, yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, $3, type, peek(stack), " ", "IDENT");
-                            update(list2, $3, peek(stack), $5);
+                            insert(list2, yylineno, $3, type, scope, " ", "IDENT");
+                            update(list2, $3, scope, $5);
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
@@ -377,7 +390,7 @@ declarator
     ;
 
 fun_declaration
-    : declaration_specifiers ID declarator compound_stmt {insert(list2, yylineno, $2, type, peek(stack), " ", "FUNCT");}
+    : declaration_specifiers ID declarator compound_stmt {insert(list2, yylineno, $2, type, scope, " ", "FUNCT");}
     ;
 
 declaration_specifiers
@@ -403,7 +416,7 @@ params
     
 compound_stmt
     : LBRACE RBRACE {$$ = "$";}
-    | LBRACE block_item_list RBRACE {$$ = $2;}
+    | LBRACE block_item_list RBRACE {$$ = $2; reset_scope(list2,scope);}
     ;
 
 block_item_list
@@ -437,7 +450,7 @@ cascade_out
 
 cin
 	: CIN EXTRACTION ID SEMI {
-					id_ex = find(list2, $3, peek(stack));
+					id_ex = find(list2, $3, scope);
 					if(id_ex == NULL){
 						printf("Error in Line %d : Usage before Declaration\n", yylineno);
 						errors++;
@@ -466,7 +479,7 @@ op
 	:NUM {$<str>$ = yylval.str;}
 	|STR {$<str>$ = yylval.str;}
 	|ID {
-		id_ex = find(list2, $1, peek(stack));
+		id_ex = find(list2, $1, scope);
 		if(id_ex == NULL){
 			printf("Error in Line %d : Usage before Declaration\n", yylineno);
 			errors++;

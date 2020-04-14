@@ -952,7 +952,7 @@ YY_RULE_SETUP
 case 34:
 YY_RULE_SETUP
 #line 128 ".\\phase5.l"
-{printToken("RBRACE"); pop(stack); return RBRACE;}
+{printToken("RBRACE"); pop(stack);scope--; return RBRACE;}
 	YY_BREAK
 case 35:
 YY_RULE_SETUP

@@ -343,6 +343,19 @@ void print(node *head){
     fprintf(symtab, "------------------------------------------------------------------\n");
 }
 
+void reset_scope(list1 *root, int current_scope) {
+    if(root == NULL || root->head == NULL){
+        return;
+    }
+    node *t2 = root->head;
+    while (t2!=NULL) {
+        if(t2->scope > current_scope) {
+            t2->scope=-1;
+        }
+        t2=t2->next;
+    }
+}
+
 struct expression_details{
     int value;
     char type[200];
@@ -352,7 +365,7 @@ exp_det det1;
 
 
 /* Line 189 of yacc.c  */
-#line 356 "int_code.tab.c"
+#line 369 "int_code.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -375,14 +388,14 @@ exp_det det1;
 /* "%code requires" blocks.  */
 
 /* Line 209 of yacc.c  */
-#line 282 ".\\int_code.y"
+#line 295 ".\\int_code.y"
 
 
 
 
 
 /* Line 209 of yacc.c  */
-#line 386 "int_code.tab.c"
+#line 399 "int_code.tab.c"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -451,7 +464,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 285 ".\\int_code.y"
+#line 298 ".\\int_code.y"
 
 	char chr;
 	int integer;
@@ -461,7 +474,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 465 "int_code.tab.c"
+#line 478 "int_code.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -473,7 +486,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 477 "int_code.tab.c"
+#line 490 "int_code.tab.c"
 
 #ifdef short
 # undef short
@@ -804,18 +817,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   318,   318,   321,   322,   323,   324,   325,   326,   330,
-     331,   334,   336,   338,   339,   342,   343,   346,   347,   358,
-     360,   375,   376,   380,   384,   385,   386,   387,   388,   392,
-     393,   394,   395,   400,   401,   405,   406,   410,   411,   415,
-     416,   420,   421,   422,   423,   424,   425,   426,   429,   430,
-     432,   434,   435,   436,   439,   466,   467,   468,   484,   485,
-     490,   506,   490,   513,   514,   518,   525,   518,   549,   550,
-     554,   555,   559,   559,   567,   559,   601,   602,   615,   628,
-     642,   656,   672,   688,   691,   723,   755,   759,   788,   825,
-     826,   835,   836,   837,   838,   839,   840,   844,   846,   861,
-     875,   876,   880,   883,   898,   916,   917,   932,   933,   937,
-     940,   944,   945,   949,   950
+       0,   331,   331,   334,   335,   336,   337,   338,   339,   343,
+     344,   347,   349,   351,   352,   355,   356,   359,   360,   371,
+     373,   388,   389,   393,   397,   398,   399,   400,   401,   405,
+     406,   407,   408,   413,   414,   418,   419,   423,   424,   428,
+     429,   433,   434,   435,   436,   437,   438,   439,   442,   443,
+     445,   447,   448,   449,   452,   479,   480,   481,   497,   498,
+     503,   519,   503,   526,   527,   531,   538,   531,   562,   563,
+     567,   568,   572,   572,   580,   572,   614,   615,   628,   641,
+     655,   669,   685,   701,   704,   736,   768,   772,   801,   838,
+     839,   848,   849,   850,   851,   852,   853,   857,   859,   874,
+     888,   889,   893,   896,   911,   929,   930,   945,   946,   950,
+     953,   957,   958,   962,   963
 };
 #endif
 
@@ -1873,126 +1886,126 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 318 ".\\int_code.y"
+#line 331 ".\\int_code.y"
     {display_three_add(q_list1);;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 321 ".\\int_code.y"
+#line 334 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 322 ".\\int_code.y"
+#line 335 ".\\int_code.y"
     {;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 323 ".\\int_code.y"
+#line 336 ".\\int_code.y"
     {printf("%s\n", (yyvsp[(4) - (5)].str));;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 324 ".\\int_code.y"
+#line 337 ".\\int_code.y"
     {printf("%s\n", (yyvsp[(3) - (4)].str));;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 325 ".\\int_code.y"
+#line 338 ".\\int_code.y"
     {;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 326 ".\\int_code.y"
+#line 339 ".\\int_code.y"
     {;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 330 ".\\int_code.y"
+#line 343 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str); ;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 331 ".\\int_code.y"
+#line 344 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 334 ".\\int_code.y"
-    {insert(list2, yylineno, (yyvsp[(2) - (6)].str), "class", peek(stack), " ", "class");;}
+#line 347 ".\\int_code.y"
+    {insert(list2, yylineno, (yyvsp[(2) - (6)].str), "class", scope, " ", "class");;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 337 ".\\int_code.y"
+#line 350 ".\\int_code.y"
     {;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 338 ".\\int_code.y"
+#line 351 ".\\int_code.y"
     {;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 339 ".\\int_code.y"
+#line 352 ".\\int_code.y"
     {yyerrok;;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 342 ".\\int_code.y"
-    {insert(list2, yylineno, (yyvsp[(1) - (4)].str), type, peek(stack), " ", "ARRAY");;}
+#line 355 ".\\int_code.y"
+    {insert(list2, yylineno, (yyvsp[(1) - (4)].str), type, scope, " ", "ARRAY");;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 343 ".\\int_code.y"
-    {insert(list2, yylineno, (yyvsp[(2) - (2)].str), type, peek(stack), " ", "PTR");;}
+#line 356 ".\\int_code.y"
+    {insert(list2, yylineno, (yyvsp[(2) - (2)].str), type, scope, " ", "PTR");;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 346 ".\\int_code.y"
-    {insert(list2, yylineno, (yyvsp[(1) - (1)].str), type, peek(stack), " ", "IDENT");;}
+#line 359 ".\\int_code.y"
+    {insert(list2, yylineno, (yyvsp[(1) - (1)].str), type, scope, " ", "IDENT");;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 347 ".\\int_code.y"
+#line 360 ".\\int_code.y"
     {
                             char arg1[10];
                             sprintf(arg1,"%s",(yyvsp[(3) - (3)].str));
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",(yyvsp[(1) - (3)].str), yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, (yyvsp[(1) - (3)].str), type, peek(stack), " ", "IDENT");
-                            update(list2, (yyvsp[(1) - (3)].str), peek(stack), (yyvsp[(3) - (3)].str));
+                            insert(list2, yylineno, (yyvsp[(1) - (3)].str), type, scope, " ", "IDENT");
+                            update(list2, (yyvsp[(1) - (3)].str), scope, (yyvsp[(3) - (3)].str));
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
@@ -2002,22 +2015,22 @@ yyreduce:
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 358 ".\\int_code.y"
-    { insert(list2, yylineno, (yyvsp[(3) - (3)].str), type, peek(stack), " ", "IDENT"); 
+#line 371 ".\\int_code.y"
+    { insert(list2, yylineno, (yyvsp[(3) - (3)].str), type, scope, " ", "IDENT"); 
     ;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 360 ".\\int_code.y"
+#line 373 ".\\int_code.y"
     {
                             char arg1[10];
                             sprintf(arg1,"%s",(yyvsp[(5) - (5)].str));
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",(yyvsp[(3) - (5)].str), yylineno);
                             insert_quadruple(q_list1,new_record); 
-                            insert(list2, yylineno, (yyvsp[(3) - (5)].str), type, peek(stack), " ", "IDENT");
-                            update(list2, (yyvsp[(3) - (5)].str), peek(stack), (yyvsp[(5) - (5)].str));
+                            insert(list2, yylineno, (yyvsp[(3) - (5)].str), type, scope, " ", "IDENT");
+                            update(list2, (yyvsp[(3) - (5)].str), scope, (yyvsp[(5) - (5)].str));
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
@@ -2027,233 +2040,233 @@ yyreduce:
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 375 ".\\int_code.y"
+#line 388 ".\\int_code.y"
     {;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 376 ".\\int_code.y"
+#line 389 ".\\int_code.y"
     {;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 380 ".\\int_code.y"
-    {insert(list2, yylineno, (yyvsp[(2) - (4)].str), type, peek(stack), " ", "FUNCT");;}
+#line 393 ".\\int_code.y"
+    {insert(list2, yylineno, (yyvsp[(2) - (4)].str), type, scope, " ", "FUNCT");;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 384 ".\\int_code.y"
+#line 397 ".\\int_code.y"
     {(yyval.str)=integer; strcpy(type, "int");;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 385 ".\\int_code.y"
+#line 398 ".\\int_code.y"
     {(yyval.str)="VOID"; strcpy(type, "void");;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 386 ".\\int_code.y"
+#line 399 ".\\int_code.y"
     {(yyval.str)="float"; strcpy(type, "float");;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 387 ".\\int_code.y"
+#line 400 ".\\int_code.y"
     {(yyval.str)="char"; strcpy(type, "char");;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 388 ".\\int_code.y"
+#line 401 ".\\int_code.y"
     {(yyval.str)="class"; strcpy(type, "class");;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 392 ".\\int_code.y"
+#line 405 ".\\int_code.y"
     {;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 393 ".\\int_code.y"
+#line 406 ".\\int_code.y"
     {;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 394 ".\\int_code.y"
+#line 407 ".\\int_code.y"
     {;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 395 ".\\int_code.y"
+#line 408 ".\\int_code.y"
     {;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 400 ".\\int_code.y"
+#line 413 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 401 ".\\int_code.y"
+#line 414 ".\\int_code.y"
     {;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 405 ".\\int_code.y"
+#line 418 ".\\int_code.y"
     {(yyval.str) = "$";;}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 406 ".\\int_code.y"
-    {(yyval.str) = (yyvsp[(2) - (3)].str);;}
+#line 419 ".\\int_code.y"
+    {(yyval.str) = (yyvsp[(2) - (3)].str); reset_scope(list2,scope);;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 410 ".\\int_code.y"
+#line 423 ".\\int_code.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str); ;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 411 ".\\int_code.y"
+#line 424 ".\\int_code.y"
     {(yyval.str) = (yyvsp[(2) - (2)].str);;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 415 ".\\int_code.y"
+#line 428 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str); ;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 416 ".\\int_code.y"
+#line 429 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 420 ".\\int_code.y"
+#line 433 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 421 ".\\int_code.y"
+#line 434 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 422 ".\\int_code.y"
+#line 435 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 423 ".\\int_code.y"
+#line 436 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 424 ".\\int_code.y"
+#line 437 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 425 ".\\int_code.y"
+#line 438 ".\\int_code.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str);;}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 426 ".\\int_code.y"
+#line 439 ".\\int_code.y"
     {(yyval.str) = (yyvsp[(1) - (1)].str);;}
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 429 ".\\int_code.y"
+#line 442 ".\\int_code.y"
     {;}
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 430 ".\\int_code.y"
+#line 443 ".\\int_code.y"
     {;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 434 ".\\int_code.y"
+#line 447 ".\\int_code.y"
     {if(errors==0) printf("%s", (yyvsp[(2) - (2)].str));;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 435 ".\\int_code.y"
+#line 448 ".\\int_code.y"
     {if(errors==0) printf("%s", (yyvsp[(2) - (3)].str));;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 436 ".\\int_code.y"
+#line 449 ".\\int_code.y"
     {if(errors==0) printf("%s\n", (yyvsp[(2) - (4)].str));;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 439 ".\\int_code.y"
+#line 452 ".\\int_code.y"
     {
-					id_ex = find(list2, (yyvsp[(3) - (4)].str), peek(stack));
+					id_ex = find(list2, (yyvsp[(3) - (4)].str), scope);
 					if(id_ex == NULL){
 						printf("Error in Line %d : Usage before Declaration\n", yylineno);
 						errors++;
@@ -2282,23 +2295,23 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 466 ".\\int_code.y"
+#line 479 ".\\int_code.y"
     {(yyval.str) = yylval.str;;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 467 ".\\int_code.y"
+#line 480 ".\\int_code.y"
     {(yyval.str) = yylval.str;;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 468 ".\\int_code.y"
+#line 481 ".\\int_code.y"
     {
-		id_ex = find(list2, (yyvsp[(1) - (1)].str), peek(stack));
+		id_ex = find(list2, (yyvsp[(1) - (1)].str), scope);
 		if(id_ex == NULL){
 			printf("Error in Line %d : Usage before Declaration\n", yylineno);
 			errors++;
@@ -2316,21 +2329,21 @@ yyreduce:
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 484 ".\\int_code.y"
+#line 497 ".\\int_code.y"
     {;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 485 ".\\int_code.y"
+#line 498 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (2)].str);;}
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 490 ".\\int_code.y"
+#line 503 ".\\int_code.y"
     {
     	quadruple* new_record;
         //Insert Condition
@@ -2353,7 +2366,7 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 506 ".\\int_code.y"
+#line 519 ".\\int_code.y"
     {
         quadruple* new_record = create_quadruple("label","","","",(yyvsp[(5) - (6)].str), yylineno);
         insert_quadruple(q_list1,new_record);
@@ -2364,21 +2377,21 @@ yyreduce:
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 510 ".\\int_code.y"
+#line 523 ".\\int_code.y"
     {;}
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 514 ".\\int_code.y"
+#line 527 ".\\int_code.y"
     {;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 518 ".\\int_code.y"
+#line 531 ".\\int_code.y"
     {
         quadruple* new_record;
         char while_label[10];
@@ -2391,7 +2404,7 @@ yyreduce:
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 525 ".\\int_code.y"
+#line 538 ".\\int_code.y"
     {
         quadruple* new_record;
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10],true_label[10],false_label[10];
@@ -2413,7 +2426,7 @@ yyreduce:
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 540 ".\\int_code.y"
+#line 553 ".\\int_code.y"
     {
         quadruple* new_record = create_quadruple("goto","","","",(yyvsp[(2) - (7)].str), yylineno);
         insert_quadruple(q_list1,new_record);
@@ -2425,42 +2438,42 @@ yyreduce:
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 549 ".\\int_code.y"
+#line 562 ".\\int_code.y"
     {;}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 550 ".\\int_code.y"
+#line 563 ".\\int_code.y"
     {;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 554 ".\\int_code.y"
+#line 567 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 555 ".\\int_code.y"
+#line 568 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 559 ".\\int_code.y"
+#line 572 ".\\int_code.y"
     {scope++;;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 559 ".\\int_code.y"
+#line 572 ".\\int_code.y"
     {
         quadruple* new_record;
         char for_label[10];
@@ -2474,7 +2487,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 567 ".\\int_code.y"
+#line 580 ".\\int_code.y"
     { 
         quadruple* new_record;
         char break_label[10],body_label[10];
@@ -2494,7 +2507,7 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 580 ".\\int_code.y"
+#line 593 ".\\int_code.y"
     {
         char update_stmt[20],iterable[20],operator[5],update_value[20],for_label[10];
         strcpy(update_stmt,(yyvsp[(9) - (12)].str));
@@ -2519,14 +2532,14 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 601 ".\\int_code.y"
+#line 614 ".\\int_code.y"
     {;}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 602 ".\\int_code.y"
+#line 615 ".\\int_code.y"
     {
                             char arg1[10];
                             sprintf(arg1,"%s",(yyvsp[(4) - (4)].str));
@@ -2543,7 +2556,7 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 615 ".\\int_code.y"
+#line 628 ".\\int_code.y"
     { 
                     id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                     if(id_ex==NULL){
@@ -2562,7 +2575,7 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 628 ".\\int_code.y"
+#line 641 ".\\int_code.y"
     { 
                     id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                     if(id_ex==NULL){
@@ -2582,7 +2595,7 @@ yyreduce:
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 642 ".\\int_code.y"
+#line 655 ".\\int_code.y"
     { 
                     id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                     if(id_ex==NULL){
@@ -2602,7 +2615,7 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 656 ".\\int_code.y"
+#line 669 ".\\int_code.y"
     { 
                     id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                     if(id_ex==NULL){
@@ -2621,7 +2634,7 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 672 ".\\int_code.y"
+#line 685 ".\\int_code.y"
     {
                             char arg1[10],previous_temp[10];
                             strcpy(previous_temp,get_previous_temp()); 
@@ -2643,14 +2656,14 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 688 ".\\int_code.y"
+#line 701 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 84:
 
 /* Line 1455 of yacc.c  */
-#line 691 ".\\int_code.y"
+#line 704 ".\\int_code.y"
     { 
                  id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                  if(id_ex==NULL){
@@ -2688,7 +2701,7 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 723 ".\\int_code.y"
+#line 736 ".\\int_code.y"
     {
                  id_ex = find(list2, (yyvsp[(2) - (2)].str), scope); 
                  if(id_ex==NULL){
@@ -2726,14 +2739,14 @@ yyreduce:
   case 86:
 
 /* Line 1455 of yacc.c  */
-#line 755 ".\\int_code.y"
+#line 768 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 759 ".\\int_code.y"
+#line 772 ".\\int_code.y"
     {
                  id_ex = find(list2, (yyvsp[(1) - (2)].str), scope); 
                  if(id_ex==NULL){
@@ -2768,7 +2781,7 @@ yyreduce:
   case 88:
 
 /* Line 1455 of yacc.c  */
-#line 788 ".\\int_code.y"
+#line 801 ".\\int_code.y"
     {
                  id_ex = find(list2, (yyvsp[(1) - (2)].str), scope); 
                  if(id_ex==NULL){
@@ -2806,14 +2819,14 @@ yyreduce:
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 825 ".\\int_code.y"
+#line 838 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 90:
 
 /* Line 1455 of yacc.c  */
-#line 826 ".\\int_code.y"
+#line 839 ".\\int_code.y"
     {
 
 				strcat((yyvsp[(1) - (3)].str), (yyvsp[(2) - (3)].str));
@@ -2825,49 +2838,49 @@ yyreduce:
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 835 ".\\int_code.y"
+#line 848 ".\\int_code.y"
     {(yyval.str) = "<";;}
     break;
 
   case 92:
 
 /* Line 1455 of yacc.c  */
-#line 836 ".\\int_code.y"
+#line 849 ".\\int_code.y"
     {(yyval.str) = "<=";;}
     break;
 
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 837 ".\\int_code.y"
+#line 850 ".\\int_code.y"
     {(yyval.str) = ">";;}
     break;
 
   case 94:
 
 /* Line 1455 of yacc.c  */
-#line 838 ".\\int_code.y"
+#line 851 ".\\int_code.y"
     {(yyval.str) = ">=";;}
     break;
 
   case 95:
 
 /* Line 1455 of yacc.c  */
-#line 839 ".\\int_code.y"
+#line 852 ".\\int_code.y"
     {(yyval.str) = "==";;}
     break;
 
   case 96:
 
 /* Line 1455 of yacc.c  */
-#line 840 ".\\int_code.y"
+#line 853 ".\\int_code.y"
     {(yyval.str) = "!=";;}
     break;
 
   case 97:
 
 /* Line 1455 of yacc.c  */
-#line 844 ".\\int_code.y"
+#line 857 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);
         ;}
     break;
@@ -2875,7 +2888,7 @@ yyreduce:
   case 98:
 
 /* Line 1455 of yacc.c  */
-#line 846 ".\\int_code.y"
+#line 859 ".\\int_code.y"
     {
 
         quadruple* new_record;
@@ -2896,7 +2909,7 @@ yyreduce:
   case 99:
 
 /* Line 1455 of yacc.c  */
-#line 861 ".\\int_code.y"
+#line 874 ".\\int_code.y"
     {
     	quadruple* new_record;
         
@@ -2916,21 +2929,21 @@ yyreduce:
   case 100:
 
 /* Line 1455 of yacc.c  */
-#line 875 ".\\int_code.y"
+#line 888 ".\\int_code.y"
     {(yyval.str) = (yyvsp[(2) - (2)].str);;}
     break;
 
   case 101:
 
 /* Line 1455 of yacc.c  */
-#line 876 ".\\int_code.y"
+#line 889 ".\\int_code.y"
     {char temp[20];strcpy(temp,"-");strcat(temp,(yyvsp[(2) - (2)].str));(yyval.str) = temp;;}
     break;
 
   case 102:
 
 /* Line 1455 of yacc.c  */
-#line 880 ".\\int_code.y"
+#line 893 ".\\int_code.y"
     {
               (yyval.str) = (yyvsp[(1) - (1)].str);
             ;}
@@ -2939,7 +2952,7 @@ yyreduce:
   case 103:
 
 /* Line 1455 of yacc.c  */
-#line 883 ".\\int_code.y"
+#line 896 ".\\int_code.y"
     {
     	quadruple* new_record;
         
@@ -2960,7 +2973,7 @@ yyreduce:
   case 104:
 
 /* Line 1455 of yacc.c  */
-#line 898 ".\\int_code.y"
+#line 911 ".\\int_code.y"
     {
     	quadruple* new_record;
         
@@ -2981,14 +2994,14 @@ yyreduce:
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 916 ".\\int_code.y"
+#line 929 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(2) - (3)].str); ;}
     break;
 
   case 106:
 
 /* Line 1455 of yacc.c  */
-#line 917 ".\\int_code.y"
+#line 930 ".\\int_code.y"
     {
     	  if(yylineno == 1){
     	  	(yyval.str) = (yyvsp[(1) - (1)].str);
@@ -3009,14 +3022,14 @@ yyreduce:
   case 107:
 
 /* Line 1455 of yacc.c  */
-#line 932 ".\\int_code.y"
+#line 945 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 108:
 
 /* Line 1455 of yacc.c  */
-#line 933 ".\\int_code.y"
+#line 946 ".\\int_code.y"
     { 
            (yyval.str) = yylval.str;
            
@@ -3026,7 +3039,7 @@ yyreduce:
   case 109:
 
 /* Line 1455 of yacc.c  */
-#line 937 ".\\int_code.y"
+#line 950 ".\\int_code.y"
     {
         (yyval.str) = yylval.str;
     	;}
@@ -3035,42 +3048,42 @@ yyreduce:
   case 110:
 
 /* Line 1455 of yacc.c  */
-#line 940 ".\\int_code.y"
+#line 953 ".\\int_code.y"
     {(yyval.str) = yylval.str;;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 944 ".\\int_code.y"
+#line 957 ".\\int_code.y"
     {;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 945 ".\\int_code.y"
+#line 958 ".\\int_code.y"
     {;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 949 ".\\int_code.y"
+#line 962 ".\\int_code.y"
     {(yyval.str)=(yyvsp[(1) - (1)].str);;}
     break;
 
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 950 ".\\int_code.y"
+#line 963 ".\\int_code.y"
     {;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 3074 "int_code.tab.c"
+#line 3087 "int_code.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -3282,7 +3295,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 953 ".\\int_code.y"
+#line 966 ".\\int_code.y"
 
 #include <stdio.h>
 int

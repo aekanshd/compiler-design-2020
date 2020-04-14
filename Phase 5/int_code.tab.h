@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 282 ".\\int_code.y"
+#line 295 ".\\int_code.y"
 
 
 
@@ -111,7 +111,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 285 ".\\int_code.y"
+#line 298 ".\\int_code.y"
 
 	char chr;
 	int integer;

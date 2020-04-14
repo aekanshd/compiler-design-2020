@@ -257,6 +257,20 @@ void print(node *head){
     }
 }
 
+void reset_scope(list1 *root, int current_scope) {
+    if(root == NULL || root->head == NULL){
+        return;
+    }
+    node *t2 = root->head;
+    while (t2!=NULL) {
+        if(t2->scope > current_scope) {
+            t2->scope=-1;
+        }
+        t2=t2->link;
+    }
+    return
+}
+
 struct expression_details{
     int value;
     char type[200];
@@ -376,7 +390,9 @@ params
     
 compound_stmt
     : LBRACE RBRACE {$$ = "$";}
-    | LBRACE block_item_list RBRACE {$$ = $2;}
+    | LBRACE block_item_list RBRACE {$$ = $2;
+    reset_scope(list2,scope);
+    }
     ;
 
 block_item_list
