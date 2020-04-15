@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 295 ".\\int_code.y"
+#line 296 ".\\int_code.y"
 
 
 
@@ -100,7 +100,8 @@
      CLASS = 305,
      PREPROC = 306,
      THEN = 307,
-     LOWER_THAN_ELSE = 308
+     LOWER_THAN_ELSE = 308,
+     GREATER_THAN_ELSE = 309
    };
 #endif
 
@@ -111,7 +112,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 298 ".\\int_code.y"
+#line 299 ".\\int_code.y"
 
 	char chr;
 	int integer;
@@ -121,7 +122,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 125 "int_code.tab.h"
+#line 126 "int_code.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

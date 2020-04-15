@@ -26,6 +26,7 @@ int cflag=0, iflag=0, fflag=0;
 char* tab="  ";
 char indent[100]="";
 char type[200];
+char if_stmt_skip_label[10];
 char* integer="INT";
 char* floating="float";
 char* none = "none";
@@ -320,9 +321,10 @@ exp_det det1;
 %nonassoc THEN
 %nonassoc LOWER_THAN_ELSE
 %nonassoc ELSE
+%nonassoc GREATER_THAN_ELSE
 
 
-%type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt expression statement args expression_stmt for_stmt
+%type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt else_if expression statement args expression_stmt for_stmt
 %type<str> relop declaration_specifiers stream_constructs op
 
 %start atree
@@ -517,14 +519,55 @@ if_stmt
         insert_quadruple(q_list1,new_record);
         $<str>$=false_label;
     } statement {
-        quadruple* new_record = create_quadruple("label","","","",$<str>5, yylineno);
+        quadruple* new_record;
+        strcpy(if_stmt_skip_label,create_label());
+        new_record = create_quadruple("goto","","","",if_stmt_skip_label, yylineno); 
         insert_quadruple(q_list1,new_record);
-        
-    } else_stmt {}
+        new_record = create_quadruple("label","","","",$<str>5, yylineno);
+        insert_quadruple(q_list1,new_record);   
+    } else_if {
+        quadruple* new_record;
+        new_record = create_quadruple("label","","","",if_stmt_skip_label, yylineno);
+        insert_quadruple(q_list1,new_record);
+    }
     ;
-else_stmt : 
-        %prec LOWER_THAN_ELSE
-    | ELSE statement {}
+
+else_if :     
+    ELSE IF LPAREN expression RPAREN {
+        printf("else if\n");
+        quadruple* new_record;
+        //Insert Condition
+        char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10],true_label[10],false_label[10];
+        sprintf(statement_type,"conditional_goto");
+        strcpy(arg1,$<str>4);
+        strcpy(true_label,create_label());
+        new_record = create_quadruple(statement_type,arg1,"","",true_label, yylineno);
+        insert_quadruple(q_list1,new_record);
+        sprintf(statement_type,"goto");
+        strcpy(false_label,create_label());
+        new_record = create_quadruple(statement_type,"","","",false_label, yylineno); 
+        insert_quadruple(q_list1,new_record);
+        new_record = create_quadruple("label","","","",true_label, yylineno);
+        insert_quadruple(q_list1,new_record);
+        $<str>$=false_label;
+    } statement {
+        quadruple* new_record;
+        new_record = create_quadruple("goto","","","",if_stmt_skip_label, yylineno); 
+        insert_quadruple(q_list1,new_record);
+        new_record = create_quadruple("label","","","",$<str>6, yylineno);
+        insert_quadruple(q_list1,new_record);   
+    } else_if {}
+    | ELSE else_body {printf("else\n");}
+    | {}
+    ;
+    
+ else_body
+    : expression_stmt {$<str>$=$1;}
+    | compound_stmt {$<str>$=$1;}
+    | while_stmt {$<str>$=$1;}
+    | return_stmt {$<str>$=$1;}
+    | for_stmt {$<str>$ = $1;}
+    | stream_constructs {$<str>$ = $1;}
     ;
 
 while_stmt

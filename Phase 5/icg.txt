@@ -8,15 +8,32 @@ if  c<10  goto L0
 goto L1
 L0 : 
 a =  50
+goto L2
 L1 : 
+L2 : 
 t2 = 4 + 10
 b =  t2
 t3 = b + 34
 a =  t3
-if  c<10  goto L2
-goto L3
-L2 : 
+if  c<10  goto L3
+goto L4
 L3 : 
+a =  7
+goto L5
+L4 : 
+if  c>10  goto L6
+goto L7
+L6 : 
+a =  66
+goto L5
+L7 : 
+if  c>10  goto L8
+goto L9
+L8 : 
+a =  66
+goto L5
+L9 : 
+L5 : 
 t4 = 4 + c
 c =  t4
 t5 = 8 / 3
@@ -31,17 +48,19 @@ t13 = t11 - t12
 c =  t13
 p =  9.7
 p =  200
-if  p<5  goto L4
-goto L5
-L4 : 
+if  p<5  goto L10
+goto L11
+L10 : 
 a =  10
-L5 : 
+goto L12
+L11 : 
+L12 : 
 i =  0
-L6 : 
-if  i<10  goto L7
-goto L8
-L7 : 
+L13 : 
+if  i<10  goto L14
+goto L15
+L14 : 
 i = i + 1
-goto L6
-L8 : 
+goto L13
+L15 : 
 a =  p
