@@ -6,6 +6,10 @@ def printl(list1):
         
 def printExpression(constantList, filepointer):
     for i in constantList:
+        if(i[0] == "A" and i[1] == "R" and i[2]=="R"):
+            print(i)
+            time.sleep(0.03)
+            filepointer.write("%s\n"%(i))
         if(i[0]=="="):
             print(i[3],i[0],i[1])
             time.sleep(0.03)
@@ -14,7 +18,7 @@ def printExpression(constantList, filepointer):
             print(i[3],"=",i[1],i[0],i[2])
             time.sleep(0.03)
             filepointer.write("%s %s %s %s %s\n"%(i[3],"=",i[1],i[0],i[2]))
-        elif(i[0] in ["IF","GOTO","LABEL","not"]):
+        elif(i[0] in ["IF","GOTO","LABEL","not", "ARR"]):
             
             if(i[0]=="IF"):
                 print(i[0],i[1],"GOTO",i[3])
@@ -32,6 +36,11 @@ def printExpression(constantList, filepointer):
                 print(i[3],"=",i[0],i[1])
                 time.sleep(0.03)
                 filepointer.write("%s %s %s %s\n"%(i[3],"=",i[0],i[1]))
+            if(i[0] == "ARR"):
+                print(i[1], "=", i[3])
+                time.sleep(0.03)
+                filepointer.write("%s %s %s %s\n"%("ARR", i[0], "=", i[3]))
+                
 def existslabel(lines, i):
     if(i == 0):
         return 0
@@ -251,11 +260,15 @@ def constantFolding(lines, blocks):
                     constantList.append(["LABEL", arg1, "NULL", "NULL"])
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
             else:
-                cond, arg1, gt, label = i.split();
-                print("IF", arg1, "GOTO", label)
-                time.sleep(0.03)
-                constantList.append(["IF", arg1, "GOTO", label])
-                fullList.append(["IF", arg1, "GOTO", label])
+                if(i.split()[0] == 'ARR'):
+                    print(i)
+                    constantList.append(i)
+                else:
+                    cond, arg1, gt, label = i.split();
+                    print("IF", arg1, "GOTO", label)
+                    time.sleep(0.03)
+                    constantList.append(["IF", arg1, "GOTO", label])
+                    fullList.append(["IF", arg1, "GOTO", label])
                 
         else:
             if(len(i.split()) == 3):
@@ -380,11 +393,16 @@ def constantFolding(lines, blocks):
                     fullList.append(["GOTO", arg2, "NULL", "NULL"])
                 
             else:
-                cond, arg1, gt, label = i.split();
-                print("IF", arg1, "GOTO", label)
-                time.sleep(0.03)
-                constantList.append(["IF", arg1, "GOTO", label])
-                fullList.append(["IF", arg1, "GOTO", label])
+                if(i.split()[0] == 'ARR'):
+                    print(i)
+                    constantList.append(i)
+                else:
+                    
+                    cond, arg1, gt, label = i.split();
+                    print("IF", arg1, "GOTO", label)
+                    time.sleep(0.03)
+                    constantList.append(["IF", arg1, "GOTO", label])
+                    fullList.append(["IF", arg1, "GOTO", label])
         k+=1
     
     newlist = []
@@ -422,7 +440,7 @@ def liveVarAnalysis(lines):
     print()
 
 fin = open("icg.txt", "r")
-fout = open("p5out.txt", "w")
+fout = open("Optim_ICG.txt", "w")
 lines = fin.readlines()
 print()
 print("______________________")
@@ -454,6 +472,7 @@ print()
 print("Constant Folded Expression")
 print("__________________________")
 print()
+
 printExpression(constantList, fout)
 fin.close()
 fout.close()

@@ -104,6 +104,9 @@ char* get_three_add(quadruple* record) {
     else if(strcmp(record->statement, "condition")==0){
     	sprintf(res, "%s", record->res);
     }
+    else if(strcmp(record->statement, "ARR")==0){
+    	sprintf(res, "ARR %s = %s", record->res, record->arg1);
+    }
     return res;
 }
 
@@ -407,7 +410,9 @@ comma_list
 array_dec
 	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, scope, " ", "ARRAY");}
 	| STAR ID {insert(list2, yylineno, $2, type, scope, " ", "PTR");}
-    | ID LSQUAR RSQUAR ASSIGN array_init { insert(list2, yylineno, $1, "int" , scope, $<str>5, "ARRAY");}
+    | ID LSQUAR RSQUAR ASSIGN array_init { insert(list2, yylineno, $1, "int" , scope, $<str>5, "ARRAY");
+    									   quadruple * new_record = create_quadruple("ARR","",$5,"",$1, yylineno);
+                            			   insert_quadruple(q_list1,new_record);  }
 
 init_declarator_list
     : ID {insert(list2, yylineno, $1, type, scope, " ", "IDENT");}

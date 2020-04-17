@@ -1,5 +1,7 @@
+p =  0
 q =  0
 m =  m
+ARR arr = 1,2,3
 t0 = 3 * 5
 t1 = 2 + t0
 a =  t1
@@ -70,6 +72,13 @@ goto L13
 goto L18
 L17 : 
 L18 : 
+if  a>b  goto L19
+goto L20
+L19 : 
+goto L15
+goto L21
+L20 : 
+L21 : 
 i = i + 1
 goto L13
 L15 : 

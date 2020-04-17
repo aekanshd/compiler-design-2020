@@ -1,7 +1,10 @@
 #include<iostream>
 #include<algorithm>
-
-//int p = 0;
+class e{
+	int a, b, c;
+	
+};
+int p = 0;
 
 int q = 0;
 int main()
@@ -42,6 +45,9 @@ int main()
 	for(int i=0;i<10;i++){
 		if ( a < b) {
 			continue;
+		}
+		if(a>b){
+			break;
 		}
 	}
 	int =5;
