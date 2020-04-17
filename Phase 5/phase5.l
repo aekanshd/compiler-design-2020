@@ -94,6 +94,8 @@ struct Stack* stack;
 "else"                  {printToken("ELSE"); return(ELSE);}
 "while"                 {printToken("WHILE"); return(WHILE);}
 "return"                    {printToken("RETURN"); return(RETURN);}
+"break"                    {printToken("BREAK"); return(BREAK);}
+"continue"                    {printToken("CONTINUE"); return(CONTINUE);}
 "void"                  {printToken("VOID");yylval.str = strdup(yytext); 
                          return(VOID);}
 "int"                   {printToken("INT");yylval.str = strdup(yytext); 

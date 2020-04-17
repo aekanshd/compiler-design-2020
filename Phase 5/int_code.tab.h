@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 331 ".\\int_code.y"
+#line 341 ".\\int_code.y"
 
 
 
@@ -59,49 +59,51 @@
      FLOAT = 264,
      CHAR = 265,
      FOR = 266,
-     INC_OP = 267,
-     DEC_OP = 268,
-     PLUS = 269,
-     MINUS = 270,
-     STAR = 271,
-     SLASH = 272,
-     LT = 273,
-     LTEQ = 274,
-     GT = 275,
-     GTEQ = 276,
-     EQ = 277,
-     NEQ = 278,
-     ASSIGN = 279,
-     SEMI = 280,
-     COMMA = 281,
-     LPAREN = 282,
-     RPAREN = 283,
-     LSQUAR = 284,
-     RSQUAR = 285,
-     LBRACE = 286,
-     RBRACE = 287,
-     LCOMMENT = 288,
-     RCOMMENT = 289,
-     ID = 290,
-     NUM = 291,
-     FLT = 292,
-     CHR = 293,
-     LETTER = 294,
-     DIGIT = 295,
-     NONTOKEN = 296,
-     ERROR = 297,
-     ENDFILE = 298,
-     NL = 299,
-     ENDL = 300,
-     STR = 301,
-     INSERTION = 302,
-     EXTRACTION = 303,
-     CIN = 304,
-     COUT = 305,
-     CLASS = 306,
-     PREPROC = 307,
-     THEN = 308,
-     LOWER_THAN_IF = 309
+     BREAK = 267,
+     CONTINUE = 268,
+     INC_OP = 269,
+     DEC_OP = 270,
+     PLUS = 271,
+     MINUS = 272,
+     STAR = 273,
+     SLASH = 274,
+     LT = 275,
+     LTEQ = 276,
+     GT = 277,
+     GTEQ = 278,
+     EQ = 279,
+     NEQ = 280,
+     ASSIGN = 281,
+     SEMI = 282,
+     COMMA = 283,
+     LPAREN = 284,
+     RPAREN = 285,
+     LSQUAR = 286,
+     RSQUAR = 287,
+     LBRACE = 288,
+     RBRACE = 289,
+     LCOMMENT = 290,
+     RCOMMENT = 291,
+     ID = 292,
+     NUM = 293,
+     FLT = 294,
+     CHR = 295,
+     LETTER = 296,
+     DIGIT = 297,
+     NONTOKEN = 298,
+     ERROR = 299,
+     ENDFILE = 300,
+     NL = 301,
+     ENDL = 302,
+     STR = 303,
+     INSERTION = 304,
+     EXTRACTION = 305,
+     CIN = 306,
+     COUT = 307,
+     CLASS = 308,
+     PREPROC = 309,
+     THEN = 310,
+     LOWER_THAN_IF = 311
    };
 #endif
 
@@ -112,7 +114,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 334 ".\\int_code.y"
+#line 344 ".\\int_code.y"
 
 	char chr;
 	int integer;
@@ -122,7 +124,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 126 "int_code.tab.h"
+#line 128 "int_code.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

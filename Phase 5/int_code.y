@@ -180,6 +180,16 @@ char * get_dtype(char * str) {
     
 }
 //end of quadruples code
+// Implementation of break and continue
+struct construct {
+    char start_label[10];
+    char stop_label[10];
+};
+
+typedef struct construct construct;
+construct current_construct;
+
+//end
 struct node{
     int nl;
     char name[100];
@@ -338,7 +348,7 @@ exp_det det1;
 	char *str;
 }
 
-%token IF ELSE WHILE RETURN VOID INT FLOAT CHAR FOR
+%token IF ELSE WHILE RETURN VOID INT FLOAT CHAR FOR BREAK CONTINUE
 %token INC_OP DEC_OP PLUS MINUS STAR SLASH  LT LTEQ GT GTEQ EQ NEQ ASSIGN  
 %token SEMI COMMA LPAREN RPAREN LSQUAR RSQUAR LBRACE RBRACE LCOMMENT RCOMMENT 
 %token <str> ID NUM FLT CHR
@@ -359,7 +369,7 @@ exp_det det1;
 
 %expect 2 
 %type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt else_if expression statement args expression_stmt for_stmt
-%type<str> relop declaration_specifiers stream_constructs op
+%type<str> relop declaration_specifiers stream_constructs op array_init
 
 %start atree
 %%
@@ -387,9 +397,17 @@ var_declaration
     | declaration_specifiers array_dec SEMI {}
     | error SEMI{yyerrok;}
     ;
+array_init
+    : LBRACE comma_list RBRACE {$<str>$=$<str>2;}
+    ;
+comma_list
+    : NUM COMMA comma_list {$<str>$=$<str>1;strcat($<str>$,",");strcat($<str>$,$<str>3);}
+    | NUM {$<str>$=$<str>1;} 
+    ;
 array_dec
 	: ID LSQUAR NUM RSQUAR {insert(list2, yylineno, $1, type, scope, " ", "ARRAY");}
 	| STAR ID {insert(list2, yylineno, $2, type, scope, " ", "PTR");}
+    | ID LSQUAR RSQUAR ASSIGN array_init { insert(list2, yylineno, $1, "int" , scope, $<str>5, "ARRAY");}
 
 init_declarator_list
     : ID {insert(list2, yylineno, $1, type, scope, " ", "IDENT");}
@@ -473,6 +491,33 @@ statement
     | return_stmt {$$=$1;}
     | for_stmt {$$ = $1;}
     | stream_constructs {$$ = $1;}
+    | break_stmt {}
+    | continue_stmt {}
+    ;
+
+break_stmt
+    : BREAK {
+        if (strcmp(current_construct.stop_label,"") !=0) {
+            quadruple* new_record;
+            new_record = create_quadruple("goto","","","",current_construct.stop_label, yylineno);
+            insert_quadruple(q_list1,new_record);
+        } else {
+            errors++;
+            printf("Error in Line %d : Wrong Usage of statement \"break\"...\n", yylineno);
+        }
+    }
+    ;
+continue_stmt
+    : CONTINUE {
+        if (strcmp(current_construct.start_label,"") !=0) {
+            quadruple* new_record;
+            new_record = create_quadruple("goto","","","",current_construct.start_label, yylineno);
+            insert_quadruple(q_list1,new_record);
+        } else {
+            errors++;
+            printf("Error in Line %d : Wrong Usage of statement \"continue\"...\n", yylineno);
+        }
+    }
     ;
 stream_constructs
 	: cout_cascade {}
@@ -604,6 +649,8 @@ else_if :
     | return_stmt {$<str>$=$1;}
     | for_stmt {$<str>$ = $1;}
     | stream_constructs {$<str>$ = $1;}
+    | break_stmt {}
+    | continue_stmt {}
     ;
 
 while_stmt
@@ -613,6 +660,7 @@ while_stmt
         strcpy(while_label,create_label());
         new_record = create_quadruple("label","","","",while_label, yylineno);
         insert_quadruple(q_list1,new_record);
+        strcpy(current_construct.start_label,while_label);
         $<str>$=while_label;} LPAREN expression RPAREN
         {
         quadruple* new_record;
@@ -626,6 +674,7 @@ while_stmt
         strcpy(false_label,create_label());
         new_record = create_quadruple(statement_type,"","","",false_label, yylineno); 
         insert_quadruple(q_list1,new_record);
+        strcpy(current_construct.stop_label,false_label);
         new_record = create_quadruple("label","","","",true_label, yylineno);
         insert_quadruple(q_list1,new_record);
         $<str>$=false_label;
@@ -634,6 +683,8 @@ while_stmt
         insert_quadruple(q_list1,new_record);
         new_record = create_quadruple("label","","","",$<str>6, yylineno);
         insert_quadruple(q_list1,new_record);
+        strcpy(current_construct.start_label,"");
+        strcpy(current_construct.stop_label,"");
     }
     ;
 
@@ -654,6 +705,7 @@ for_stmt
         strcpy(for_label,create_label());
         new_record = create_quadruple("label","","","",for_label, yylineno);
         insert_quadruple(q_list1,new_record);
+        strcpy(current_construct.start_label,for_label);
         $<str>$=for_label;
 	} 
 	simple_expression SEMI for_update RPAREN { 
@@ -667,6 +719,7 @@ for_stmt
         insert_quadruple(q_list1,new_record); 
         new_record = create_quadruple("label","","","",body_label, yylineno);
         insert_quadruple(q_list1,new_record);
+        strcpy(current_construct.stop_label,break_label);
         $<str>$=break_label;
         scope--;
     } statement {
@@ -687,6 +740,8 @@ for_stmt
         strcpy(break_label,$<str>11);
         new_record = create_quadruple("label","","","",break_label, yylineno);
         insert_quadruple(q_list1,new_record); 
+        strcpy(current_construct.start_label,"");
+        strcpy(current_construct.stop_label,"");
     }
     ;
 for_initialiser 

@@ -63,6 +63,13 @@ L13 :
 if  i<10  goto L14
 goto L15
 L14 : 
+if  a<b  goto L16
+goto L17
+L16 : 
+goto L13
+goto L18
+L17 : 
+L18 : 
 i = i + 1
 goto L13
 L15 : 

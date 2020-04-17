@@ -8,6 +8,7 @@ int main()
 {
 	char m;
 	m = 'm';
+	int arr[] = {1,2,3};
 	int a = 2+3*5;
 	int b = a + 5;
 	int c = a + b;
@@ -38,7 +39,11 @@ int main()
 	int p=200;
 	if(p<5) a=10;
 	cout<<"Hi"<<endl;
-	for(int i=0;i<10;i++){}
+	for(int i=0;i<10;i++){
+		if ( a < b) {
+			continue;
+		}
+	}
 	int =5;
 	int int;
 	a=p;
