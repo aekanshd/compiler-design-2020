@@ -91,6 +91,7 @@ def genAssembly(lines, file):
     regval = 0
     for i in lines:
         i = i.strip("\n")
+        
         if(len(i.split()) == 2):
             if(i.split()[0] == "GOTO"):
                 st = "B " + i.split()[1]
@@ -143,8 +144,22 @@ def genAssembly(lines, file):
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)
-            
-        if(len(i.split()) == 4):
+        if(len(i.split())==4 and i.split()[0]=="ARR"):
+            variable = i.split()[1]
+            value = i.split()[3].split(",")
+            if(variable not in varlist):
+                out = ""
+                out = out + variable + ":" + " .WORD "
+                vals = ""
+                for x in value:
+                    vals = vals + x + " "
+                out = out + vals
+                print("ARM DECLARATION :", out)
+                time.sleep(0.02)
+                vardec.append(out)
+                varlist.append(variable)
+                
+        if(len(i.split()) == 4 and i.split()[0]!="ARR"):
             
             condition = i.split()[1]
             label = i.split()[3]
