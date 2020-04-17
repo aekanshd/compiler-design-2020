@@ -134,7 +134,7 @@ struct Stack* stack;
 {L}{A}*                 {printToken("ID");yylval.str = strdup(yytext); return ID;}
 {D}+            {printToken("NUMBER");yylval.str = strdup(yytext); return NUM;}
 {D}*"."{D}+     {printToken("FLOATINGPOINT");yylval.str = strdup(yytext); return FLT;}
-\"{TE}*{WS}*\"       {printToken("String"); yylval.str = strdup(yytext); return STR;}
+\"{TE}*{WS}*\"       {printToken("STRING"); yylval.str = strdup(yytext); return STR;}
 {WS}+                   {}
 .                   {printToken("UNKNOWN LEXEME");printToken(yytext);}
 

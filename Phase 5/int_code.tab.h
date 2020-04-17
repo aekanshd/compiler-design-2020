@@ -35,7 +35,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 1676 of yacc.c  */
-#line 296 ".\\int_code.y"
+#line 331 ".\\int_code.y"
 
 
 
@@ -85,23 +85,23 @@
      ID = 290,
      NUM = 291,
      FLT = 292,
-     LETTER = 293,
-     DIGIT = 294,
-     NONTOKEN = 295,
-     ERROR = 296,
-     ENDFILE = 297,
-     NL = 298,
-     ENDL = 299,
-     STR = 300,
-     INSERTION = 301,
-     EXTRACTION = 302,
-     CIN = 303,
-     COUT = 304,
-     CLASS = 305,
-     PREPROC = 306,
-     THEN = 307,
-     LOWER_THAN_ELSE = 308,
-     GREATER_THAN_ELSE = 309
+     CHR = 293,
+     LETTER = 294,
+     DIGIT = 295,
+     NONTOKEN = 296,
+     ERROR = 297,
+     ENDFILE = 298,
+     NL = 299,
+     ENDL = 300,
+     STR = 301,
+     INSERTION = 302,
+     EXTRACTION = 303,
+     CIN = 304,
+     COUT = 305,
+     CLASS = 306,
+     PREPROC = 307,
+     THEN = 308,
+     LOWER_THAN_IF = 309
    };
 #endif
 
@@ -112,7 +112,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 299 ".\\int_code.y"
+#line 334 ".\\int_code.y"
 
 	char chr;
 	int integer;

@@ -6,8 +6,9 @@
 int q = 0;
 int main()
 {
-	//int c = 2+3*5;
-	int a = 10;
+	char m;
+	m = 'm';
+	int a = 2+3*5;
 	int b = a + 5;
 	int c = a + b;
 	if(c<10){a = 50;}

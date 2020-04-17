@@ -144,6 +144,41 @@ char * get_previous_temp() {
     }
     return traversal->res;
 }
+
+char * get_dtype(char * str) {
+    int i=0;
+    char* type = (char*)malloc(sizeof(char)*10);
+    if(str[0]=='\"') {
+        strcpy(type,"STRING");
+        return type;
+    }
+    else if(str[0]=='\'') {
+        strcpy(type,"CHAR");
+        return type;
+    }
+    strcpy(type,"INT");
+    while(str[i]!='\0' && str[i]>=0 && str[i]<=9) {
+        i++;
+    }
+    if (str[i]=='\0') {
+        return type;
+    }
+    else if (str[i]=='.') {
+        strcpy(type,"FLOAT");
+        i++;
+        while(str[i]!='\0' && str[i]>=0 && str[i]<=9) {
+            i++;
+        }
+        if (str[i]=='\0') {
+        return type;
+    }
+    else {
+        strcpy(type,"INVALID");
+        return type;
+    }
+    }
+    
+}
 //end of quadruples code
 struct node{
     int nl;
@@ -256,12 +291,12 @@ void update(list1 *root, char name[100], int scope,  char rhs[200]){
 void print(node *head){
     // printf("1\n");
     node *temp = head;
-    printf("__________________________________________________________________\n");
-    fprintf(symtab, "__________________________________________________________________\n");
+    printf("___________________________________________________________________\n");
+    fprintf(symtab, "___________________________________________________________________\n");
     printf("|Line      |Name      |Scope     |value     |id_type   |datatype  |\n");
     fprintf(symtab, "|Line      |Name      |Scope     |value     |id_type   |datatype  |\n");
-    printf("------------------------------------------------------------------\n");
-    fprintf(symtab, "------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------\n");
+    fprintf(symtab, "-------------------------------------------------------------------\n");
     while(temp!=NULL){
 
         printf("|%-10d|%-10s|%-10d|%-10s|%-10s|%-10s|\n", temp->nl, temp->name, temp->scope, temp->rhs, temp->type, temp->dtype);
@@ -269,8 +304,8 @@ void print(node *head){
         temp=temp->next;
     }
 
-    printf("------------------------------------------------------------------\n");
-    fprintf(symtab, "------------------------------------------------------------------\n");
+    printf("-------------------------------------------------------------------\n");
+    fprintf(symtab, "-------------------------------------------------------------------\n");
 }
 
 void reset_scope(list1 *root, int current_scope) {
@@ -287,7 +322,7 @@ void reset_scope(list1 *root, int current_scope) {
 }
 
 struct expression_details{
-    int value;
+    //int value;
     char type[200];
 };
 typedef struct expression_details exp_det;
@@ -306,7 +341,7 @@ exp_det det1;
 %token IF ELSE WHILE RETURN VOID INT FLOAT CHAR FOR
 %token INC_OP DEC_OP PLUS MINUS STAR SLASH  LT LTEQ GT GTEQ EQ NEQ ASSIGN  
 %token SEMI COMMA LPAREN RPAREN LSQUAR RSQUAR LBRACE RBRACE LCOMMENT RCOMMENT 
-%token <str> ID NUM FLT
+%token <str> ID NUM FLT CHR
 %token LETTER DIGIT
 %token NONTOKEN ERROR ENDFILE
 %token NL ENDL
@@ -319,11 +354,10 @@ exp_det det1;
 %left STAR SLASH
 
 %nonassoc THEN
-%nonassoc LOWER_THAN_ELSE
-%nonassoc ELSE
-%nonassoc GREATER_THAN_ELSE
+%nonassoc IF
+%nonassoc LOWER_THAN_IF
 
-
+%expect 2 
 %type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt else_if expression statement args expression_stmt for_stmt
 %type<str> relop declaration_specifiers stream_constructs op
 
@@ -534,7 +568,7 @@ if_stmt
 
 else_if :     
     ELSE IF LPAREN expression RPAREN {
-        printf("else if\n");
+        //printf("else if\n");
         quadruple* new_record;
         //Insert Condition
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10],true_label[10],false_label[10];
@@ -557,7 +591,9 @@ else_if :
         new_record = create_quadruple("label","","","",$<str>6, yylineno);
         insert_quadruple(q_list1,new_record);   
     } else_if {}
-    | ELSE else_body {printf("else\n");}
+    | ELSE else_body  %prec LOWER_THAN_IF {
+        //printf("else\n");
+    }
     | {}
     ;
     
@@ -899,8 +935,7 @@ relop
 additive_expression
     : term {$$=$1;
         }
-    | additive_expression PLUS additive_expression {
-
+    | additive_expression PLUS additive_expression {        
         quadruple* new_record;
         
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10];
@@ -982,18 +1017,20 @@ factor
             $$ = "$";}
           else{
           	$$ = $1;
-            
-            
+            strcpy(det1.type,id_ex->dtype);            
           }}}
-    | call {$$=$1;}
+    | call {
+        $$=$1;
+        }
     | NUM { 
            $$ = yylval.str;
-           
+           strcpy(det1.type,"int");
            }
     |FLT{
         $$ = yylval.str;
+        strcpy(det1.type,"float");
     	}
-    |STR {$$ = yylval.str;}
+    |STR {$$ = yylval.str;strcpy(det1.type,"string");}
     ;
     
 call
