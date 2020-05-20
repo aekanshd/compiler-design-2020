@@ -106,6 +106,7 @@ struct Stack* stack;
 "for"                   {printToken("FOR"); return FOR;}
 "class"                 {printToken("CLASS"); return CLASS;}
 "#include"				{printToken("PREPROCESSOR_DIRECTIVE"); return PREPROC;}
+"new"                   {printToken("NEW"); return NEW;}
 "++"                {printToken("INC_OP");return INC_OP;} 
 "--"                {printToken("DEC_OP");return DEC_OP;} 
 "+"             {printToken("PLUS");return PLUS;}     

@@ -364,6 +364,7 @@ exp_det det1;
 %token CIN COUT
 %token CLASS
 %token PREPROC
+%token NEW
 %left PLUS MINUS
 %left STAR SLASH
 
@@ -373,7 +374,7 @@ exp_det det1;
 
 %expect 2 
 %type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt else_if expression statement args expression_stmt for_stmt
-%type<str> relop declaration_specifiers stream_constructs op array_init arrayindex
+%type<str> relop declaration_specifiers stream_constructs op array_init arrayindex object_dec
 
 %start atree
 %%
@@ -399,6 +400,7 @@ var_declaration
     : declaration_specifiers init_declarator_list SEMI 
     {}
     | declaration_specifiers array_dec SEMI {}
+    | object_dec {$$ = $1;}
     | error SEMI{yyerrok;}
     ;
 array_init
@@ -416,8 +418,18 @@ array_dec
                             			   insert_quadruple(q_list1,new_record);  }
 
 init_declarator_list
-    : ID {insert(list2, yylineno, $1, type, scope, " ", "IDENT");}
+    : ID {	id_ex = find(list2, $1, scope+1);
+    		if(id_ex !=NULL){
+    			printf("Error on line %d, multiple definitions\n", yylineno);
+    		}
+    		else
+    		insert(list2, yylineno, $1, type, scope, " ", "IDENT");}
     | ID ASSIGN expression {
+    						id_ex = find(list2, $1, scope+1);
+    						if(id_ex !=NULL){
+    							printf("Error on line %d, multiple definitions\n", yylineno);
+    						}
+    						else{
                             char arg1[10];
                             sprintf(arg1,"%s",$3);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$1, yylineno);
@@ -427,10 +439,21 @@ init_declarator_list
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
+                            }
                         }
-    | init_declarator_list COMMA ID { insert(list2, yylineno, $3, type, scope, " ", "IDENT"); 
+    | init_declarator_list COMMA ID { id_ex = find(list2, $3, scope+1);
+    								  if(id_ex !=NULL){
+    									printf("Error on line %d, multiple definitions\n", yylineno);
+    								}				
+    								else
+    									insert(list2, yylineno, $3, type, scope, " ", "IDENT"); 
     }
     | init_declarator_list COMMA ID ASSIGN expression {
+    						id_ex = find(list2, $3, scope+1);
+    					    if(id_ex !=NULL){
+    							printf("Error on line %d, multiple definitions\n", yylineno);
+    						}
+    						else{				
                             char arg1[10];
                             sprintf(arg1,"%s",$5);
     						quadruple * new_record = create_quadruple("assignment","",arg1,"",$3, yylineno);
@@ -440,10 +463,37 @@ init_declarator_list
                             iflag = 0;
                             fflag = 0;
                             cflag = 0; 
+                            }
                         }
     
+    
     ;
+object_dec 
+	: ID ID ASSIGN NEW ID LPAREN RPAREN {id_ex = find(list2, $1, scope+1);
+										 if(id_ex == NULL){
+										 	printf("Error in Line %d, %s is not a data type\n", yylineno, $1);
 
+										 }
+										 else if(strcmp(id_ex->dtype, "class")!=0){
+										 	printf("Error in line %d, %s is not a defined type\n", yylineno, $1);
+										 }
+										 else if(strcmp($1, $5)!=0){
+										 	id_ex = find(list2, $5, scope+1);
+										 	if(id_ex == NULL){
+										 		printf("Error in line %d, Unknown identifier\n", yylineno);
+										 	}
+										 	else if(strcmp(id_ex->dtype, "class")!=0){
+										 		printf("Error in line %d, identifier is not a class type\n", yylineno);
+										 	}
+										 }
+										 
+										 else if(find(list2, $2, scope+1)!=NULL){
+										 	printf("Error in line %d, multiple definitions not allowed\n");
+										 }
+										 else{
+										 	insert(list2, yylineno, $2, $1, scope, " ", "object");
+										 }
+										 }
 declarator
     : LPAREN RPAREN {}
     | LPAREN params RPAREN {}
