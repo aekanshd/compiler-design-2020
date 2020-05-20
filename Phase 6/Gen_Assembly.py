@@ -42,22 +42,41 @@ def loadconstant(stmt, regval, value):
     return stmt, regval, r1
 
 
-def loadvariable(stmt, regval, value):
-    st1 = "MOV "+"R" + str(regval) + ","+"="+str(value)
-    r1 = regval
-    regval = (regval + 1)%13
+def loadvariable(stmt, regval, value, isarr, offset=None):
+    if(isarr == 0):
+        st1 = "MOV "+"R" + str(regval) + ","+"="+str(value)
+        r1 = regval
+        regval = (regval + 1)%13
                 
-    print("ARM STATEMENT: ", st1)
-    time.sleep(0.02)
-    stmt.append(st1)
+        print("ARM STATEMENT: ", st1)
+        time.sleep(0.02)
+        stmt.append(st1)
     
-    st2 = "MOV "+"R" + str(regval) +","+ "[R" + str(r1) + "]"
-    stmt.append(st2)
-    print("ARM STATEMENT: ", st2)
-    time.sleep(0.02)
-    r2 = regval
-    regval = (regval + 1)%13
-    return stmt, regval, r1, r2
+        st2 = "MOV "+"R" + str(regval) +","+ "[R" + str(r1) + "]"
+        stmt.append(st2)
+        print("ARM STATEMENT: ", st2)
+        time.sleep(0.02)
+        r2 = regval
+        regval = (regval + 1)%13
+        return stmt, regval, r1, r2
+    else:
+        st1 = "MOV "+"R" + str(regval) + ","+"="+str(value)
+        r1 = regval
+        regval = (regval + 1)%13
+        
+        print("ARM STATEMENT: ", st1)
+        time.sleep(0.02)
+        stmt.append(st1)
+        if(not offset.isdigit()):
+            st2 = "MOV "+"R" + str(regval) +","+ "[R" + str(r1) + "," + str(offset)+"]"
+        else:
+            st2 = "MOV "+"R" + str(regval) +","+ "[R" + str(r1) + "," + " #" + str(offset)+"]"
+        stmt.append(st2)
+        print("ARM STATEMENT: ", st2)
+        time.sleep(0.02)
+        r2 = regval
+        regval = (regval + 1)%13
+        return stmt, regval, r1, r2
 def binaryoperation(stmt, lhs, arg1, op, arg2):
     if(op == "+"):
         st = "ADD "+"R"+str(lhs)+","+"R"+str(arg1)+",R"+str(arg2)
@@ -83,7 +102,7 @@ def binaryoperation(stmt, lhs, arg1, op, arg2):
         time.sleep(0.02)
         stmt.append(st)   
     return stmt
-    
+offset = 0    
 def genAssembly(lines, file):
     vardec = []
     stmt = []
@@ -105,42 +124,85 @@ def genAssembly(lines, file):
                 stmt.append(st)
         if(len(i.split()) == 5):
             lhs, ass, arg1, op, arg2 = i.split()
-            if(arg1.isdigit() and arg2.isdigit()):
+            if(lhs[0] == '*' and arg1[0] == '*'):
+                if(arg2.isdigit()):
+                    offset = arg2
+                else:
+                    stmt, regval, r1,r2 = loadvariable(stmt, regval, arg2, 0)
+                    offset = "R"+str(r2)
+                
+            elif(arg1.isdigit() and arg2.isdigit()):
                 
                 stmt, regval, r1 = loadconstant(stmt, regval, arg1)
                 stmt, regval, r2 = loadconstant(stmt, regval, arg2)
-                stmt, regval, r3, r4 = loadvariable(stmt, regval, lhs)
+                if(lhs[0] == '*'):
+                    stmt, regval, r3, r4 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r3, r4 = loadvariable(stmt, regval, lhs,0)
                 stmt = binaryoperation(stmt, r4, r1, op, r2)
-                st = "STR R"+str(r4) + ", [R" + str(r3) + "]"
+                if(lhs[0] == '*'):
+                    st = "STR R"+str(r4) + ", [R" + str(r3) + ", #", str(offset)+"]"
+                else:
+                    st = "STR R"+str(r4) + ", [R" + str(r3) + "]"
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)
                 
             elif(arg1.isdigit()):
                 stmt, regval, r1 = loadconstant(stmt, regval, arg1)
-                stmt, regval, r2, r3 = loadvariable(stmt, regval, arg2)
-                stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs)
+                if(arg2[0] == '*'):
+                    stmt, regval, r2, r3 = loadvariable(stmt, regval, arg2[1:], 1, offset)
+                else:
+                    stmt, regval, r2, r3 = loadvariable(stmt, regval, arg2, 0)
+                if(lhs[0] == '*'):
+                    stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs, 0)
                 stmt = binaryoperation(stmt, r5, r1, op, r3)
-                st = "STR R"+str(r5) + ", [R" + str(r4) + "]"
+                if(lhs[0] == '*'):
+                    st = "STR R"+str(r5) + ", [R" + str(r4) + ", #"+str(offset)+"]"
+                else:
+                    st = "STR R"+str(r5) + ", [R" + str(r4) + "]"
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)
                 #STR Op
             elif(arg2.isdigit()):
-                stmt, regval, r1,r2 = loadvariable(stmt, regval, arg1)
+                if(arg1[0] == '*'):
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, arg1[1:], 1, offset)
+                else:
+                    stmt, regval, r1,r2 = loadvariable(stmt, regval, arg1, 0)
                 stmt, regval, r3 = loadconstant(stmt, regval, arg2)
-                stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs)
+                if(lhs[0] == '*'):
+                    stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r4, r5 = loadvariable(stmt, regval, lhs,0)
                 stmt = binaryoperation(stmt, r5, r2, op, r3)
-                st = "STR R"+str(r5) + ", [R" + str(r4) + "]"
+                if(lhs[0] == '*'):
+                    st = "STR R"+str(r5) + ", [R" + str(r4) + ", #"+str(offset)+"]"
+                else:
+                    st = "STR R"+str(r5) + ", [R" + str(r4) + "]"
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)                
             else:
-                stmt, regval, r1,r2 = loadvariable(stmt, regval, arg1)
-                stmt, regval, r3,r4 = loadvariable(stmt, regval, arg2)
-                stmt, regval, r5,r6 = loadvariable(stmt, regval, lhs)
+                if(arg1[0] == '*'):
+                    stmt, regval, r1,r2 = loadvariable(stmt, regval, arg1[1:], 1, offset)
+                else:
+                    stmt, regval, r1,r2 = loadvariable(stmt, regval, arg1, 0)
+                if(arg2[0] == '*'):
+                    stmt, regval, r3,r4 = loadvariable(stmt, regval, arg2[1:], 1, offset)
+                else:
+                    stmt, regval, r3,r4 = loadvariable(stmt, regval, arg2)
+                if(lhs[0] == '*'):
+                    stmt, regval, r5,r6 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r5,r6 = loadvariable(stmt, regval, lhs, 0)
                 stmt = binaryoperation(stmt, r6, r2, op, r4)
-                st = "STR R"+str(r6) + ", [R" + str(r5) + "]"
+                if(lhs[0] == '*'):
+                    st = "STR R"+str(r6) + ", [R" + str(r5) + ", #"+str(offset)+"]"
+                else:
+                    st = "STR R"+str(r6) + ", [R" + str(r5) + "]"
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)
@@ -192,7 +254,10 @@ def genAssembly(lines, file):
                 
             elif(lhs.isdigit()):
                 stmt, regval, r1 = loadconstant(stmt, regval, lhs)
-                stmt, regval, r2, r3 = loadvariable(stmt, regval, rhs)
+                if(rhs[0] == '*'):
+                    stmt, regval, r2, r3 = loadvariable(stmt, regval, rhs[1:], 1, offset)
+                else:
+                    stmt, regval, r2, r3 = loadvariable(stmt, regval, rhs, 0)
                 
                 st4 = "CMP " + "R"+str(r1) + "," + "R" + str(r3)
                 print("ARM STATEMENT: ", st4)
@@ -200,7 +265,10 @@ def genAssembly(lines, file):
                 stmt.append(st4)
                 stmt = findoperation(stmt, op, label)
             elif(rhs.isdigit()):
-                stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs)
+                if(lhs[0] == '*'):
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs, 0)
                 stmt, regval, r3 = loadconstant(stmt, regval, rhs)
                 st4 = "CMP " + "R"+str(r2) + "," + "R" + str(r3)
                 print("ARM STATEMENT: ", st4)
@@ -208,8 +276,14 @@ def genAssembly(lines, file):
                 stmt.append(st4)
                 stmt = findoperation(stmt, op, label)
             else:
-                stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs)
-                stmt, regval, r3, r4 = loadvariable(stmt, regval, rhs)
+                if(lhs[0] == '*'):
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs, 0)
+                if(rhs[0] == '*'):
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, lhs[1:], 1, offset)
+                else:
+                    stmt, regval, r3, r4 = loadvariable(stmt, regval, rhs, 0)
                 
                 st4 = "CMP " + "R"+str(r2) + "," + "R" + str(r4)
                 print("ARM STATEMENT: ", st4)
@@ -231,9 +305,15 @@ def genAssembly(lines, file):
                 vardec.append(out)
                 varlist.append(variable)
             else:
-                stmt, regval, r1, r2 = loadvariable(stmt, regval, variable)
+                if(variable[0] == '*'):
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, variable[1:], 1, offset)
+                else:
+                    stmt, regval, r1, r2 = loadvariable(stmt, regval, variable, 0)
                 stmt, regval, r3 = loadconstant(stmt, regval, value)
-                st = "STR R"+str(r3)+", [R" + str(r1) + "]"
+                if(variable[0] == '*'):
+                    st = "STR R"+str(r3)+", [R" + str(r1) + ", #"+str(offset)+"]"
+                else:
+                    st = "STR R"+str(r3)+", [R" + str(r1) + "]"
                 print("ARM STATEMENT: ", st)
                 time.sleep(0.02)
                 stmt.append(st)
