@@ -42,7 +42,7 @@ FILE *icgout;
 /*Data Structure to store quadruples*/
 struct quadruple{
     char statement[30];
-    char op[5];
+    char op[10];
     char arg1[20];
     char arg2[20];
     char res[20];
@@ -65,6 +65,7 @@ quadruple* create_quadruple(char* statement,char* op, char* arg1, char* arg2, ch
     strcpy(new_quadruple->arg2,arg2);
     strcpy(new_quadruple->res,res);
     new_quadruple->lineno = lineno;
+    
     //printf("Created quadruple record...\n");
     new_quadruple->next=NULL;
     return new_quadruple;
@@ -372,7 +373,7 @@ exp_det det1;
 
 %expect 2 
 %type<str> atree program external_declaration var_declaration init_declarator_list fun_declaration params_list compound_stmt declarator params block_item_list block_item call factor term additive_expression simple_expression unary_expression postfix_expression assignment_expression return_stmt while_stmt if_stmt else_if expression statement args expression_stmt for_stmt
-%type<str> relop declaration_specifiers stream_constructs op array_init
+%type<str> relop declaration_specifiers stream_constructs op array_init arrayindex
 
 %start atree
 %%
@@ -588,10 +589,12 @@ expression_stmt
 if_stmt
     :IF LPAREN expression RPAREN {
     	quadruple* new_record;
+    	
         //Insert Condition
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10],true_label[10],false_label[10];
         sprintf(statement_type,"conditional_goto");
         strcpy(arg1,$3);
+        
         strcpy(true_label,create_label());
         new_record = create_quadruple(statement_type,arg1,"","",true_label, yylineno);
         insert_quadruple(q_list1,new_record);
@@ -618,13 +621,14 @@ if_stmt
 
 else_if :     
     ELSE IF LPAREN expression RPAREN {
-        //printf("else if\n");
+        
         quadruple* new_record;
         //Insert Condition
         char statement_type[20],arg1[10],arg2[10],arg3[10],temp[10],true_label[10],false_label[10];
         sprintf(statement_type,"conditional_goto");
         strcpy(arg1,$<str>4);
         strcpy(true_label,create_label());
+
         new_record = create_quadruple(statement_type,arg1,"","",true_label, yylineno);
         insert_quadruple(q_list1,new_record);
         sprintf(statement_type,"goto");
@@ -700,7 +704,7 @@ return_stmt
     
 expression
     : assignment_expression {$$=$1;}
-    | simple_expression {$$=$1;}
+    | simple_expression {$$=$1; }
     ;
 
 for_stmt
@@ -837,6 +841,33 @@ assignment_expression
                             
 
                         }
+
+    | arrayindex ASSIGN expression{
+    								char arg1[10], previous_temp[10];
+    								strcpy(previous_temp,get_previous_temp()); 
+                            		sprintf(arg1,"%s",$3);
+    								quadruple * new_record = create_quadruple("assignment","",arg1,"",$1, yylineno);
+                            		insert_quadruple(q_list1,new_record); 
+                            		char id[200];
+                            		strcpy(id, "");
+                            		int tempcount = 0;
+                            		char lhs[200];
+                            		strcpy(lhs, $1);
+                            		while(lhs[tempcount]!='['){
+                            			id[tempcount] = lhs[tempcount];
+                            			tempcount++;
+                            			
+                            		}
+                            		id[tempcount] = '\0';
+                            		int ex = exists(list2,id, scope); 
+                            		if(ex == 0) {printf("Error in Line %d : Assignment before Declaration\n", yylineno); errors++;}
+                            		id_ex = find(list2, id, scope);
+                            		update(list2, id, scope, $3);
+                            		iflag = 0;
+                            		cflag = 0;
+                            		fflag = 0;
+
+    					}
     | unary_expression  {$$=$1;}    ;
 
 unary_expression 
@@ -976,7 +1007,7 @@ postfix_expression
 simple_expression
     : additive_expression {$$=$1;}
     | additive_expression relop additive_expression {
-
+    			
 				strcat($1, $2);
 				strcat($1, $3);
 				$$ = $1;                        
@@ -1031,6 +1062,7 @@ term
     : factor {
               $$ = $1;
             }
+    | arrayindex {$$ = $1;}
     | term STAR term {
     	quadruple* new_record;
         
@@ -1062,7 +1094,53 @@ term
     	$$ = temp;
 		}
     ;
+arrayindex
+	: ID LSQUAR NUM RSQUAR {
+					char lhs[200];
+					strcpy(lhs, "");
+					strcat(lhs, $1);
+					strcat(lhs, "[");
+					strcat(lhs, $3);
+					strcat(lhs, "]");
+					id_ex = find(list2, $1, scope);
+					if(id_ex == NULL){
+						printf("Error on %d, Assignment RHS not declared\n", yylineno);
+            			errors++;
+            			$$ = "$";
+					}
+					else{
+						$$ = lhs;
+						strcpy(det1.type, id_ex->dtype);
+					}
+					}
+	| ID LSQUAR ID RSQUAR {
+					char lhs[200];
+					strcpy(lhs, "");
+					strcat(lhs, $1);
+					strcat(lhs, "[");
+					strcat(lhs, $3);
+					strcat(lhs, "]");
+					id_ex = find(list2, $3, scope);
+					if(id_ex == NULL){
+						printf("Error on %d, Usage before declaration\n", yylineno);
+						errors++;
+						$$ = "$";
+					}
+					else{
+					id_ex = find(list2, $1, scope);
+					if(id_ex == NULL){
+						printf("Error on %d, Assignment RHS not declared\n", yylineno);
+            			errors++;
+            			$$ = "$";
+					}
 
+					else{
+						$$ = lhs;
+						strcpy(det1.type, id_ex->dtype);
+					}
+					}
+					}
+				
 factor
     : LPAREN expression RPAREN {$$=$2; }
     | ID {
@@ -1092,6 +1170,7 @@ factor
     	}
     |STR {$$ = yylval.str;strcpy(det1.type,"string");}
     ;
+
     
 call
     : ID LPAREN RPAREN {}

@@ -16,15 +16,17 @@ int main()
 	int b = a + 5;
 	int c = a + b;
 	if(c<10){a = 50;}
-	
+	arr[0] = 5;
 	b = 4 + 10;
 	a = b + 34;
 	
-	
+	for(int i = 0; i<3; i++){
+		arr[i] = 0;
+	}
 	if(c<10) {		
 		a=7;
 	}
-	else if (c>10) {
+	else if (arr[0]>10) {
 		a=66;
 	}
 	else if (c>10) {
@@ -34,7 +36,7 @@ int main()
 
 	}
 	c = 4+c;
-	c = 3 + 4 * (5/ (8/3) + 6 - 4)/ (32) - 7/8;
+	c = 3 + 4 * (5*6)/ (32);
 	float p = 9.7;
 	//p--;
 	//++p;
